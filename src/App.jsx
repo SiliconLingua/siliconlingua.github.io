@@ -1,5 +1,5 @@
 import { lazy, useEffect, useRef, useState } from "react";
-import { BookOpen, Check, Copy, Hand, ImagePlus } from "lucide-react";
+import { BookOpen, Check, Copy, Hand } from "lucide-react";
 import BlurText from "./components/BlurText/BlurText";
 import CardNav from "./components/CardNav/CardNav";
 import GlassSurface from "./components/GlassSurface/GlassSurface";
@@ -129,7 +129,12 @@ const members = [
   { name: "EMPET", handle: "empet", title: "外部协作者" },
 ];
 
-const partners = ["XINGJI Studio", "HGSpace Studio", "537工作室", "AuronaLabs"];
+const partners = [
+  { name: "XINGJI Studio", logo: `${import.meta.env.BASE_URL}1.png` },
+  { name: "HGSpace Studio", logo: `${import.meta.env.BASE_URL}2.png` },
+  { name: "537工作室", logo: `${import.meta.env.BASE_URL}3.png` },
+  { name: "AuronaLabs", logo: `${import.meta.env.BASE_URL}4.png` },
+];
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -607,14 +612,19 @@ function App() {
               >
                 <div className="partner-card-content">
                   <div
-                    className="partner-image-placeholder"
-                    aria-label={`${partner} 图片预留位置`}
+                    className="partner-logo-frame"
                   >
-                    <ImagePlus size={28} strokeWidth={1.3} aria-hidden="true" />
+                    <img
+                      className="partner-logo"
+                      src={partner.logo}
+                      alt={`${partner.name} Logo`}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
                   <div className="partner-meta">
                     <span className="partner-number">0{index + 1}</span>
-                    <h3>{partner}</h3>
+                    <h3>{partner.name}</h3>
                   </div>
                 </div>
               </GlassSurface>
