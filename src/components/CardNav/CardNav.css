@@ -1,0 +1,257 @@
+.card-nav-container {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 64px);
+  max-width: 1240px;
+  z-index: 99;
+}
+.card-nav {
+  position: relative;
+  height: 60px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(10, 10, 16, 0.06);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+.card-nav-glass {
+  position: absolute !important;
+  inset: 0;
+  z-index: 0;
+}
+.card-nav-top {
+  position: relative;
+  height: 60px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  z-index: 3;
+  color: #fff;
+}
+.hamburger-menu {
+  width: 38px;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  gap: 6px;
+}
+.hamburger-line {
+  width: 28px;
+  height: 2px;
+  background: currentColor;
+  transition: transform 0.25s ease;
+}
+.hamburger-menu.open .hamburger-line:first-child {
+  transform: translateY(4px) rotate(45deg);
+}
+.hamburger-menu.open .hamburger-line:last-child {
+  transform: translateY(-4px) rotate(-45deg);
+}
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  justify-self: center;
+  white-space: nowrap;
+}
+.logo-mark {
+  display: inline-flex;
+  align-items: end;
+  gap: 3px;
+  height: 23px;
+}
+.logo-mark i {
+  display: block;
+  width: 3px;
+  border-radius: 3px;
+  background: #fff;
+}
+.logo-mark i:nth-child(1) {
+  height: 10px;
+  opacity: 0.55;
+}
+.logo-mark i:nth-child(2) {
+  height: 16px;
+  opacity: 0.8;
+}
+.logo-mark i:nth-child(3) {
+  height: 23px;
+}
+.logo-text {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+.card-nav-controls {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+}
+.nav-setting {
+  border: 0;
+  padding: 4px 0;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+}
+.nav-setting:hover,
+.nav-setting.active {
+  color: #fff;
+}
+.nav-setting-divider {
+  color: rgba(255, 255, 255, 0.3);
+}
+.card-nav-content {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px;
+  max-height: calc(100svh - 108px);
+  overflow-y: auto;
+  visibility: hidden;
+  pointer-events: none;
+}
+.card-nav.open .card-nav-content {
+  visibility: visible;
+  pointer-events: auto;
+}
+.nav-card {
+  min-width: 0;
+  height: 180px;
+}
+.nav-card-glass {
+  background: color-mix(in srgb, var(--nav-tint) 82%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+}
+.nav-card-glass.glass-surface--svg:not(.glass-surface--inactive) {
+  backdrop-filter: blur(6px) var(--filter-id) saturate(var(--glass-saturation));
+}
+.card-nav-glass.glass-surface--svg:not(.glass-surface--inactive) {
+  backdrop-filter: blur(8px) var(--filter-id) saturate(var(--glass-saturation));
+}
+.nav-card-glass .glass-surface__content {
+  padding: 0;
+}
+.nav-card-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  gap: 20px;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.nav-card-label {
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.nav-card-links {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nav-card-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.nav-card-link svg {
+  flex: 0 0 16px;
+  opacity: 0.65;
+}
+.nav-card-link:hover {
+  color: #c9f1ff;
+}
+.nav-card-link:focus-visible,
+.nav-setting:focus-visible,
+.hamburger-menu:focus-visible,
+.logo-container:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+@media (max-width: 768px) {
+  .card-nav-container {
+    top: 16px;
+    width: calc(100% - 24px);
+  }
+  .card-nav-top {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 0 10px;
+  }
+  .hamburger-menu {
+    width: 32px;
+  }
+  .hamburger-line {
+    width: 24px;
+  }
+  .logo-container {
+    gap: 7px;
+  }
+  .logo-text {
+    font-size: 13px;
+  }
+  .card-nav-controls {
+    gap: 5px;
+    font-size: 10px;
+  }
+  .card-nav-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
+    max-height: calc(100svh - 94px);
+  }
+  .nav-card {
+    height: 172px;
+  }
+  .nav-card-body {
+    padding: 14px;
+    gap: 16px;
+  }
+  .nav-card-label {
+    font-size: 18px;
+  }
+  .nav-card-link {
+    font-size: 13px;
+    gap: 5px;
+  }
+}
+@media (max-width: 380px) {
+  .nav-card-body {
+    padding: 12px 10px;
+  }
+  .nav-card-label {
+    font-size: 17px;
+  }
+  .logo-mark {
+    height: 18px;
+    gap: 2px;
+  }
+  .logo-mark i:nth-child(3) {
+    height: 18px;
+  }
+  .card-nav-controls {
+    gap: 4px;
+  }
+}
