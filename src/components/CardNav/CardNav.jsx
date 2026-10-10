@@ -116,12 +116,7 @@ const CardNav = ({
             aria-label={logoAlt}
             onClick={() => changeMenu(false)}
           >
-            <span className="logo-mark" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            <span className="logo-text">硅芯智语</span>
+            <img src="bg.png" alt="logo" className="logo-mark" />
           </a>
           <div className="card-nav-controls" aria-label="显示与语言设置">
             <button
