@@ -8,6 +8,7 @@ import GlassSurface from "./components/GlassSurface/GlassSurface";
 import StarBorder from "./components/StarBorder";
 import ViewportBackground from "./components/ViewportBackground";
 import PageNavigation from "./components/PageNavigation";
+import SpotlightCard from "./components/SpotlightCard/SpotlightCard";
 
 const AeroShards = lazy(() => import("./components/AeroShards"));
 const ColorBends = lazy(() => import("./components/ColorBends"));
@@ -533,16 +534,18 @@ function App() {
           <ul className="members-grid">
             {members.map(([name, handle], index) => (
               <li key={handle} style={{ "--member-accent": memberAccents[index % memberAccents.length] }}>
-                <div className="member-row">
-                  <div className="member-avatar" aria-hidden="true">
-                    <img src={brandImage} alt="" loading="lazy" />
-                    <span>{name.slice(0, 1)}</span>
+                <SpotlightCard className="member-card">
+                  <div className="member-row">
+                    <div className="member-avatar" aria-hidden="true">
+                      <img src={brandImage} alt="" loading="lazy" />
+                      <span>{name.slice(0, 1)}</span>
+                    </div>
+                    <div className="member-info">
+                      <h3>{name}</h3>
+                      <p>{t.members.roles[index]}</p>
+                    </div>
                   </div>
-                  <div className="member-info">
-                    <h3>{name}</h3>
-                    <p>{t.members.roles[index]}</p>
-                  </div>
-                </div>
+                </SpotlightCard>
               </li>
             ))}
           </ul>

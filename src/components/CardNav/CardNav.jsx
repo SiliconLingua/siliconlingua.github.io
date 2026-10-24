@@ -2,6 +2,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { ArrowUpRight, Star } from "lucide-react";
 import { gsap } from "gsap";
+import GlassSurface from "../GlassSurface/GlassSurface";
 import "./CardNav.css";
 
 const CardNav = ({
@@ -37,10 +38,13 @@ const CardNav = ({
       .timeline({
         paused: true,
         onReverseComplete: () => {
-          if (!openRef.current) setExpanded(false);
+          if (!openRef.current) {
+            gsap.set(nav, { height: 60 });
+            setExpanded(false);
+          }
         },
       })
-      .to(nav, { height, duration: reduced ? 0 : 0.56, ease: "power3.inOut" })
+      .to(nav, { height, duration: reduced ? 0 : 0.52, ease: "power3.inOut" })
       .to(
         cards,
         {
@@ -77,8 +81,17 @@ const CardNav = ({
     setOpen(next);
     if (next) {
       setExpanded(true);
-      timelineRef.current?.play();
-    } else timelineRef.current?.reverse();
+      timelineRef.current?.invalidate().play();
+      return;
+    }
+
+    const timeline = timelineRef.current;
+    if (!timeline || timeline.progress() === 0) {
+      gsap.set(navRef.current, { height: 60 });
+      setExpanded(false);
+      return;
+    }
+    timeline.reverse();
   };
 
   useEffect(() => {
@@ -107,7 +120,24 @@ const CardNav = ({
         className={`card-nav ${expanded ? "open" : ""}`}
         aria-label={labels.menu || "主导航"}
       >
-        <div className="card-nav-glass" aria-hidden="true" />
+        <GlassSurface
+          className="card-nav-glass"
+          width="100%"
+          height="100%"
+          borderRadius={14}
+          borderWidth={0.08}
+          brightness={48}
+          opacity={0.92}
+          blur={15}
+          displace={0.35}
+          backgroundOpacity={0.14}
+          saturation={1.35}
+          distortionScale={-72}
+          greenOffset={5}
+          blueOffset={10}
+          mixBlendMode="screen"
+          style={{ pointerEvents: "none" }}
+        />
         <div className="card-nav-top">
           <button
             type="button"
@@ -165,7 +195,24 @@ const CardNav = ({
               }}
               style={{ "--nav-tint": cardTints[index % cardTints.length] }}
             >
-              <div className="nav-card-glass">
+              <GlassSurface
+                className="nav-card-glass"
+                width="100%"
+                height="100%"
+                borderRadius={11}
+                borderWidth={0.08}
+                brightness={45}
+                opacity={0.94}
+                blur={12}
+                displace={0.25}
+                backgroundOpacity={0.18}
+                saturation={1.3}
+                distortionScale={-48}
+                greenOffset={4}
+                blueOffset={8}
+                mixBlendMode="screen"
+                enabled={open}
+              >
                 <div className="nav-card-body">
                   <div className="nav-card-label">{item.label}</div>
                   <div className="nav-card-links">
@@ -187,7 +234,7 @@ const CardNav = ({
                     ))}
                   </div>
                 </div>
-              </div>
+              </GlassSurface>
             </div>
           ))}
         </div>
