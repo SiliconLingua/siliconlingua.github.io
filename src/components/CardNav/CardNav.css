@@ -12,15 +12,46 @@
   height: 60px;
   padding: 0;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background: rgba(10, 10, 16, 0.06);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(221, 246, 255, 0.28);
+  border-radius: 14px;
+  background: rgba(9, 12, 24, 0.32);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(120, 215, 255, 0.1);
+  isolation: isolate;
+  will-change: height;
 }
 .card-nav-glass {
   position: absolute !important;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 12% -30%, rgba(222, 252, 255, 0.3), transparent 34%),
+    radial-gradient(circle at 88% 120%, rgba(116, 106, 255, 0.2), transparent 38%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.035) 42%, rgba(38, 45, 81, 0.22));
+  backdrop-filter: blur(24px) saturate(1.55) contrast(1.04);
+  -webkit-backdrop-filter: blur(24px) saturate(1.55) contrast(1.04);
+  pointer-events: none;
+}
+.card-nav-glass::before {
+  position: absolute;
+  inset: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: inherit;
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0.14), transparent 32%, transparent 68%, rgba(140, 220, 255, 0.08));
+  content: "";
+}
+.card-nav-glass::after {
+  position: absolute;
+  top: 0;
+  right: 12%;
+  left: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(230, 252, 255, 0.62), transparent);
+  content: "";
 }
 .card-nav-top {
   position: relative;
@@ -66,27 +97,11 @@
   white-space: nowrap;
 }
 .logo-mark {
-  display: inline-flex;
-  align-items: end;
-  gap: 3px;
-  height: 46px;
-}
-.logo-mark i {
   display: block;
-  width: 3px;
-  border-radius: 3px;
-  background: #fff;
-}
-.logo-mark i:nth-child(1) {
-  height: 10px;
-  opacity: 0.55;
-}
-.logo-mark i:nth-child(2) {
-  height: 16px;
-  opacity: 0.8;
-}
-.logo-mark i:nth-child(3) {
-  height: 23px;
+  width: auto;
+  max-width: 150px;
+  height: 38px;
+  object-fit: contain;
 }
 .logo-text {
   color: #fff;
@@ -136,19 +151,38 @@
   height: 180px;
 }
 .nav-card-glass {
-  background: color-mix(in srgb, var(--nav-tint) 82%, transparent);
-  border: 1px solid rgba(255, 255, 255, 0.26);
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(232, 250, 255, 0.26);
+  border-radius: 11px;
+  background:
+    linear-gradient(140deg, color-mix(in srgb, var(--nav-tint) 86%, rgba(255, 255, 255, 0.16)), color-mix(in srgb, var(--nav-tint) 66%, rgba(4, 8, 20, 0.28))),
+    rgba(15, 18, 32, 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(137, 225, 255, 0.1),
+    0 14px 30px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(17px) saturate(1.45);
+  -webkit-backdrop-filter: blur(17px) saturate(1.45);
 }
-.nav-card-glass.glass-surface--svg:not(.glass-surface--inactive) {
-  backdrop-filter: blur(6px) var(--filter-id) saturate(var(--glass-saturation));
-}
-.card-nav-glass.glass-surface--svg:not(.glass-surface--inactive) {
-  backdrop-filter: blur(8px) var(--filter-id) saturate(var(--glass-saturation));
+.nav-card-glass::before {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255, 255, 255, 0.2), transparent 32%),
+    linear-gradient(115deg, rgba(255, 255, 255, 0.08), transparent 42%, rgba(170, 230, 255, 0.06));
+  content: "";
+  pointer-events: none;
 }
 .nav-card-glass .glass-surface__content {
   padding: 0;
 }
 .nav-card-body {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -245,11 +279,8 @@
     font-size: 17px;
   }
   .logo-mark {
-    height: 18px;
-    gap: 2px;
-  }
-  .logo-mark i:nth-child(3) {
-    height: 18px;
+    max-width: 112px;
+    height: 28px;
   }
   .card-nav-controls {
     gap: 4px;

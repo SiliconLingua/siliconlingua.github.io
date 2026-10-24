@@ -245,21 +245,19 @@ const WebThreads = ({
     let currentActive = 0;
     let targetActive = 0;
 
-    const onMouseMove = e => {
-      const rect = canvas.getBoundingClientRect();
-      targetMouse[0] = (e.clientX - rect.left) / rect.width;
-      targetMouse[1] = 1.0 - (e.clientY - rect.top) / rect.height;
-      targetActive = 1;
+    const onPointerMove = e => {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      targetMouse[0] = x / Math.max(rect.width, 1);
+      targetMouse[1] = 1.0 - y / Math.max(rect.height, 1);
+      targetActive = x >= 0 && y >= 0 && x <= rect.width && y <= rect.height ? 1 : 0;
     };
-    const onMouseEnter = () => {
-      targetActive = 1;
-    };
-    const onMouseLeave = () => {
+    const onPointerLeave = () => {
       targetActive = 0;
     };
-    canvas.addEventListener('mousemove', onMouseMove);
-    canvas.addEventListener('mouseenter', onMouseEnter);
-    canvas.addEventListener('mouseleave', onMouseLeave);
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    document.documentElement.addEventListener('pointerleave', onPointerLeave);
 
     const loop = t => {
       program.uniforms.iTime.value = t * 0.001;
@@ -278,9 +276,8 @@ const WebThreads = ({
     return () => {
       stopAnimation();
       ro.disconnect();
-      canvas.removeEventListener('mousemove', onMouseMove);
-      canvas.removeEventListener('mouseenter', onMouseEnter);
-      canvas.removeEventListener('mouseleave', onMouseLeave);
+      window.removeEventListener('pointermove', onPointerMove);
+      document.documentElement.removeEventListener('pointerleave', onPointerLeave);
       ctxMap.delete(container);
       try {
         container.removeChild(canvas);

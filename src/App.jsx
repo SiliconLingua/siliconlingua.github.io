@@ -1,36 +1,250 @@
-import { lazy, useEffect, useRef, useState } from "react";
+import { lazy, useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Check, Copy, Hand } from "lucide-react";
 import BlurText from "./components/BlurText/BlurText";
 import CardNav from "./components/CardNav/CardNav";
+import CardSwap from "./components/CardSwap";
+import FadeContent from "./components/FadeContent";
 import GlassSurface from "./components/GlassSurface/GlassSurface";
+import StarBorder from "./components/StarBorder";
 import ViewportBackground from "./components/ViewportBackground";
 import PageNavigation from "./components/PageNavigation";
 
-const Aurora = lazy(() => import("./components/Aurora/Aurora"));
-const FloatingLines = lazy(
-  () => import("./components/FloatingLines/FloatingLines"),
-);
-const ShapeGrid = lazy(() => import("./components/ShapeGrid/ShapeGrid"));
-const Particles = lazy(() => import("./components/Particles/Particles"));
-const SoftAurora = lazy(() => import("./components/SoftAurora/SoftAurora"));
+const AeroShards = lazy(() => import("./components/AeroShards"));
+const ColorBends = lazy(() => import("./components/ColorBends"));
+const GhostFibers = lazy(() => import("./components/GhostFibers"));
+const GradientBlinds = lazy(() => import("./components/GradientBlinds"));
+const MagicRings = lazy(() => import("./components/MagicRings"));
+const Particles = lazy(() => import("./components/ReactBitsParticles/Particles"));
+const SlicedWaves = lazy(() => import("./components/SlicedWaves/SlicedWaves"));
 const WebThreads = lazy(() => import("./components/WebThreads/WebThreads"));
 
-const linesGradient = ["#9728ff", "#1c68c4", "#734696"];
-const enabledWaves = ["top", "middle", "bottom"];
-const lineCount = [10, 15, 20];
-const lineDistance = [8, 6, 4];
-const auroraColors = ["#a405ff", "#47d0f5", "#6827ff"];
-const particleColors = ["#ffffff", "#dcc8ff", "#8fe8f4"];
-const memberAccents = ["#7bdbdf", "#b9a0f1", "#eac484", "#a3d9ac", "#eda4bf"];
 const brandImage = `${import.meta.env.BASE_URL}bg.png`;
-const pages = [
-  { id: "top", label: "首页" },
-  { id: "team", label: "关于我们" },
-  { id: "members", label: "我们的成员" },
-  { id: "llm", label: "大语言模型" },
-  { id: "in-progress", label: "正在开发" },
-  { id: "join-us", label: "加入我们" },
-  { id: "partners", label: "合作伙伴" },
+const memberAccents = ["#7bdbdf", "#b9a0f1", "#eac484", "#a3d9ac", "#eda4bf"];
+
+const copy = {
+  zh: {
+    nav: {
+      home: "首页",
+      about: "关于我们",
+      members: "我们的成员",
+      projects: "我们的项目",
+      more: "了解更多",
+      studio: "星际工作室",
+      team: "团队介绍",
+      model: "大语言模型",
+      lmlab: "LMLab",
+      progress: "正在开发",
+      join: "加入我们",
+      partners: "我们的合作伙伴",
+      contact: "联系方式",
+    },
+    labels: {
+      about: "ABOUT US / 02",
+      members: "OUR MEMBERS / 03",
+      lmlab: "LMLAB / 04",
+      model: "OUR LANGUAGE MODEL / 05",
+      progress: "IN PROGRESS / 06",
+      community: "COMMUNITY / 07",
+      partners: "OUR PARTNERS / 08",
+    },
+    hero: {
+      title: "硅芯智语科技",
+      english: "We Are SiliconLingua",
+      tagline: "赋科技以智能，赋硅基以生命",
+    },
+    about: {
+      title: "我们是硅芯智语",
+      lines: [
+        "一个由高中生组成的科技团队",
+        "隶属于 XINGJI Studio，",
+        "正在进行 AI 等方面的开源项目开发",
+        "欢迎每一个志同道合的朋友加入",
+      ],
+      imageAlt: "SiliconLingua 与 XINGJI Studio 标识",
+    },
+    members: {
+      title: "我们的成员",
+      subtitle: "Our Members",
+      roles: [
+        "总工程师，团队负责人",
+        "星际工作室 CEO",
+        "核心开发者",
+        "核心开发者",
+        "核心开发者",
+        "核心开发者",
+        "核心开发者",
+        "核心开发者",
+        "核心开发者",
+        "核心开发者",
+        "开发者",
+        "开发者",
+        "开发者",
+        "外部协作者",
+        "外部协作者",
+      ],
+    },
+    lmlab: {
+      title: "LMLab",
+      english: "LOCAL MODEL LAB",
+      description:
+        "LMLab 是基于 PyTorch 的本地模型开发平台，以项目、资产、训练配方、运行、推理与评估组织工作。",
+      buttons: ["Github", "CNB", "Gitee", "了解更多"],
+      imageAlt: "LMLab 本地模型开发平台界面",
+    },
+    model: {
+      title: "我们的 LLM",
+      name: "SiliconLingua-S1",
+      pending: "（敬请期待）",
+      description: "基于 Qwen3-4B 微调而成，提升数学与推理能力，将全量开源",
+      buttons: ["ModelScope", "Hugging Face", "了解更多"],
+    },
+    progress: {
+      title: ["正在开发，", "敬请期待"],
+      hand: "EMG 肌电仿生义肢手",
+      book: "我们的书籍",
+      bookDescription: "从计算机基础到人工智能的 AI 实战图解",
+    },
+    join: {
+      title: "加入我们",
+      english: "JOIN US",
+      description: "我们欢迎每一位志同道合的朋友加入",
+      qq: "请使用 QQ 加入社区群聊 202515095",
+      copied: "QQ群号已复制：202515095",
+    },
+    partners: { title: "我们的合作伙伴" },
+    footer: { brand: "硅芯智语", english: "SILICONLINGUA" },
+    controls: { menu: "主导航", open: "打开菜单", close: "关闭菜单" },
+  },
+  en: {
+    nav: {
+      home: "Home",
+      about: "About",
+      members: "Our Members",
+      projects: "Projects",
+      more: "Explore",
+      studio: "XINGJI Studio",
+      team: "Team",
+      model: "Language Model",
+      lmlab: "LMLab",
+      progress: "In Progress",
+      join: "Join Us",
+      partners: "Partners",
+      contact: "Contact",
+    },
+    labels: {
+      about: "ABOUT US / 02",
+      members: "OUR MEMBERS / 03",
+      lmlab: "LMLAB / 04",
+      model: "OUR LANGUAGE MODEL / 05",
+      progress: "IN PROGRESS / 06",
+      community: "COMMUNITY / 07",
+      partners: "OUR PARTNERS / 08",
+    },
+    hero: {
+      title: "We are SiliconLingua",
+      english: "A student-led technology team",
+      tagline: "Giving technology intelligence. Giving silicon life.",
+    },
+    about: {
+      title: "We are SiliconLingua",
+      lines: [
+        "A technology team built by high school students",
+        "A part of XINGJI Studio,",
+        "building open-source projects in AI and beyond",
+        "Everyone curious and committed is welcome",
+      ],
+      imageAlt: "SiliconLingua and XINGJI Studio marks",
+    },
+    members: {
+      title: "Our Members",
+      subtitle: "我们的成员",
+      roles: [
+        "Chief engineer, team lead",
+        "CEO, XINGJI Studio",
+        "Core developer",
+        "Core developer",
+        "Core developer",
+        "Core developer",
+        "Core developer",
+        "Core developer",
+        "Core developer",
+        "Core developer",
+        "Developer",
+        "Developer",
+        "Developer",
+        "External collaborator",
+        "External collaborator",
+      ],
+    },
+    lmlab: {
+      title: "LMLab",
+      english: "LOCAL MODEL LAB",
+      description:
+        "LMLab is a local model development platform built on PyTorch, organizing projects, assets, recipes, runs, inference and evaluation.",
+      buttons: ["Github", "CNB", "Gitee", "Learn more"],
+      imageAlt: "LMLab local model development platform interface",
+    },
+    model: {
+      title: "Our LLM",
+      name: "SiliconLingua-S1",
+      pending: "(coming soon)",
+      description:
+        "Fine-tuned from Qwen3-4B to improve mathematical reasoning, with a fully open release planned.",
+      buttons: ["ModelScope", "Hugging Face", "Learn more"],
+    },
+    progress: {
+      title: ["In progress,", "coming soon"],
+      hand: "EMG bionic prosthetic hand",
+      book: "Our book",
+      bookDescription: "A visual AI guide from computer fundamentals to applied practice",
+    },
+    join: {
+      title: "Join Us",
+      english: "加入我们",
+      description: "We welcome everyone who wants to build and learn together",
+      qq: "Join our community on QQ · 202515095",
+      copied: "QQ group copied · 202515095",
+    },
+    partners: { title: "Our Partners" },
+    footer: { brand: "SiliconLingua", english: "SILICONLINGUA" },
+    controls: { menu: "Main navigation", open: "Open menu", close: "Close menu" },
+  },
+};
+
+const members = [
+  ["码宇（Nathan）", "nathan"],
+  ["人朝的小郭同学", "guo"],
+  ["希", "xi"],
+  ["METQL", "metql"],
+  ["EcoSpace", "ecospace"],
+  ["龙雀awa", "longqueawa"],
+  ["Amia", "amia"],
+  ["Liziyu352_", "liziyu352"],
+  ["狗修金的乖狐狸", "gouxiu"],
+  ["Qi", "qi"],
+  ["Tydecent", "tydecent"],
+  ["介子气实验室", "jieziqi"],
+  ["Patrick 2026", "patrick2026"],
+  ["批扎狗", "pizhagou"],
+  ["EMPET", "empet"],
+];
+
+const partners = [
+  { name: "XINGJI Studio", logo: `${import.meta.env.BASE_URL}1.png` },
+  { name: "HGSpace Studio", logo: `${import.meta.env.BASE_URL}2.png` },
+  { name: "537 工作室", logo: `${import.meta.env.BASE_URL}3.png` },
+  { name: "AuronaLabs", logo: `${import.meta.env.BASE_URL}4.png` },
+];
+
+const pageIds = [
+  "top",
+  "team",
+  "members",
+  "lmlab",
+  "llm",
+  "in-progress",
+  "join-us",
+  "partners",
 ];
 
 function SectionLabel({ children }) {
@@ -54,94 +268,59 @@ function SectionLabel({ children }) {
   );
 }
 
-const navigationItems = [
-  {
-    label: "母工作室",
-    textColor: "#fff",
-    links: [
-      {
-        label: "星际工作室",
-        icon: "✦",
-        href: "#star-studio",
-        ariaLabel: "星际工作室",
-      },
-    ],
-  },
-  {
-    label: "关于我们",
-    textColor: "#fff",
-    links: [
-      { label: "团队介绍", href: "#team", ariaLabel: "团队介绍，跳转页面 2" },
-      {
-        label: "组成成员",
-        href: "#members",
-        ariaLabel: "组成成员，跳转页面 3",
-      },
-    ],
-  },
-  {
-    label: "我们的项目",
-    textColor: "#fff",
-    links: [
-      {
-        label: "大语言模型",
-        href: "#llm",
-        ariaLabel: "大语言模型，跳转页面 4",
-      },
-      { label: "LMlab", href: "#lmlab", ariaLabel: "LMlab，跳转页面 5" },
-      {
-        label: "正在开发",
-        href: "#in-progress",
-        ariaLabel: "正在开发，跳转页面 6",
-      },
-    ],
-  },
-  {
-    label: "了解更多",
-    textColor: "#fff",
-    links: [
-      { label: "加入我们", href: "#join-us", ariaLabel: "加入我们" },
-      {
-        label: "我们的合作伙伴",
-        href: "#partners",
-        ariaLabel: "我们的合作伙伴",
-      },
-      { label: "联系方式", href: "#contact", ariaLabel: "联系方式" },
-    ],
-  },
-];
-
-const members = [
-  { name: "码宇（Nathan）", handle: "nathan", title: "总工程师，团队负责人" },
-  { name: "人朝的小郭同学", handle: "guo", title: "星际工作室 CEO" },
-  { name: "希", handle: "xi", title: "核心开发者" },
-  { name: "METQL", handle: "metql", title: "核心开发者" },
-  { name: "EcoSpace", handle: "ecospace", title: "核心开发者" },
-  { name: "龙雀awa", handle: "longqueawa", title: "核心开发者" },
-  { name: "Amia", handle: "amia", title: "核心开发者" },
-  { name: "Liziyu352_", handle: "liziyu352", title: "核心开发者" },
-  { name: "狗修金的乖狐狸", handle: "gouxiu", title: "核心开发者" },
-  { name: "Qi", handle: "qi", title: "核心开发者" },
-  { name: "Tydecent", handle: "tydecent", title: "开发者" },
-  { name: "介子气实验室", handle: "jieziqi", title: "开发者" },
-  { name: "Patrick 2026", handle: "patrick2026", title: "开发者" },
-  { name: "批扎狗", handle: "pizhagou", title: "外部协作者" },
-  { name: "EMPET", handle: "empet", title: "外部协作者" },
-];
-
-const partners = [
-  { name: "XINGJI Studio", logo: `${import.meta.env.BASE_URL}1.png` },
-  { name: "HGSpace Studio", logo: `${import.meta.env.BASE_URL}2.png` },
-  { name: "537工作室", logo: `${import.meta.env.BASE_URL}3.png` },
-  { name: "AuronaLabs", logo: `${import.meta.env.BASE_URL}4.png` },
-];
+function ActionButton({ children, className = "", ...props }) {
+  return (
+    <StarBorder
+      className={`action-star ${className}`}
+      color="#d8faff"
+      trailColor="#8d5cff"
+      duration={4.5}
+      thickness={1}
+      radius={10}
+      trailLength={0.24}
+      stars={1}
+      glow={0.75}
+      sparkle
+      hover="brighten"
+      {...props}
+    >
+      {children}
+    </StarBorder>
+  );
+}
 
 function App() {
-  const [theme, setTheme] = useState("dark");
   const [language, setLanguage] = useState("zh");
   const [copied, setCopied] = useState(false);
   const copyTimer = useRef(null);
+  const t = copy[language];
+  const pages = useMemo(
+    () =>
+      pageIds.map((id, index) => ({
+        id,
+        label:
+          id === "top"
+            ? t.nav.home
+            : id === "team"
+              ? t.nav.about
+              : id === "members"
+                ? t.nav.members
+                : id === "lmlab"
+                  ? t.nav.lmlab
+                  : id === "llm"
+                    ? t.nav.model
+                    : id === "in-progress"
+                      ? t.nav.progress
+                      : id === "join-us"
+                        ? t.nav.join
+                        : t.nav.partners,
+        index,
+      })),
+    [t],
+  );
+
   useEffect(() => () => window.clearTimeout(copyTimer.current), []);
+
   const copyQQ = async () => {
     try {
       await navigator.clipboard.writeText("202515095");
@@ -153,119 +332,153 @@ function App() {
     }
   };
 
+  const navigationItems = useMemo(() => [
+    {
+      label: t.nav.studio,
+      textColor: "#fff",
+      links: [{ label: t.nav.studio, icon: "✦", href: "#top", ariaLabel: t.nav.studio }],
+    },
+    {
+      label: t.nav.about,
+      textColor: "#fff",
+      links: [
+        { label: t.nav.team, href: "#team", ariaLabel: t.nav.team },
+        { label: t.nav.members, href: "#members", ariaLabel: t.nav.members },
+      ],
+    },
+    {
+      label: t.nav.projects,
+      textColor: "#fff",
+      links: [
+        { label: t.nav.model, href: "#llm", ariaLabel: t.nav.model },
+        { label: t.nav.lmlab, href: "#lmlab", ariaLabel: t.nav.lmlab },
+        { label: t.nav.progress, href: "#in-progress", ariaLabel: t.nav.progress },
+      ],
+    },
+    {
+      label: t.nav.more,
+      textColor: "#fff",
+      links: [
+        { label: t.nav.join, href: "#join-us", ariaLabel: t.nav.join },
+        { label: t.nav.partners, href: "#partners", ariaLabel: t.nav.partners },
+        { label: t.nav.contact, href: "#join-us", ariaLabel: t.nav.contact },
+      ],
+    },
+  ], [t]);
+
   return (
     <main className="landing-page">
       <CardNav
         items={navigationItems}
         baseColor="rgba(8, 6, 20, 0.46)"
         menuColor="#fff"
-        theme={theme}
         language={language}
-        onThemeChange={setTheme}
         onLanguageChange={setLanguage}
-        logoAlt="硅芯智语"
+        logoAlt={t.footer.brand}
+        labels={t.controls}
       />
 
-      <PageNavigation pages={pages} />
+      <PageNavigation pages={pages} language={language} />
 
       <ViewportBackground
         className="background-layer"
-        component={FloatingLines}
-        enabledWaves={enabledWaves}
-        lineCount={lineCount}
-        lineDistance={lineDistance}
-        bendRadius={5}
-        bendStrength={-0.5}
-        interactive
-        parallax
-        parallaxStrength={0.2}
-        linesGradient={linesGradient}
-        backgroundColor="#05040b"
-        mixBlendMode="screen"
+        component={ColorBends}
+        colors={["#1c20e6", "#ad66c6", "#482483"]}
+        rotation={90}
+        speed={0.2}
+        scale={1}
+        frequency={1}
+        warpStrength={1}
+        mouseInfluence={0.7}
+        parallax={0.5}
+        noise={0.3}
+        iterations={1}
+        intensity={1.5}
+        bandWidth={2.5}
+        transparent
+        autoRotate={1}
       />
 
       <section className="hero" id="top" aria-labelledby="hero-title">
         <div className="hero-copy">
           <BlurText
-            text="我们是硅芯智语"
+            key={`hero-title-${language}`}
+            text={t.hero.title}
+            keepWordsTogether={language === "en"}
             delay={120}
             animateBy="letters"
             direction="top"
             className="hero-title hero-title-cn"
           />
           <BlurText
-            text="We Are SiliconLingua"
-            delay={75}
+            key={`hero-english-${language}`}
+            text={t.hero.english}
+            delay={language === "en" ? 24 : 75}
+            keepWordsTogether
             animateBy="letters"
             direction="top"
             className="hero-title hero-title-en"
           />
           <BlurText
-            text="赋科技以智能，赋硅基以生命"
-            delay={105}
+            key={`hero-tagline-${language}`}
+            text={t.hero.tagline}
+            delay={language === "en" ? 16 : 105}
             animateBy="letters"
             direction="bottom"
+            keepWordsTogether={language === "en"}
             className="hero-tagline"
           />
         </div>
       </section>
 
-      <section
-        className="about-section page-section"
-        id="team"
-        aria-labelledby="about-title"
-      >
+      <section className="about-section page-section" id="team" aria-labelledby="about-title">
         <ViewportBackground
           className="about-aurora"
-          component={Aurora}
-          colorStops={auroraColors}
-          blend={0.5}
-          amplitude={1.25}
-          speed={0.5}
+          component={SlicedWaves}
+          color1="#8e08ff"
+          color2="#ba10ff"
+          color3="#8500f0"
+          ribbons={3}
+          spacing={15}
+          perspective={0.45}
+          blur={2}
+          glow={1}
+          position={0.76}
+          mouseInteraction
+          barWidth={0.45}
+          amplitude={0.08}
+          frequency={1.45}
+          speed={0.35}
+          grain={0.09}
+          fade={0.55}
+          opacity={0.65}
         />
         <div className="section-wash" aria-hidden="true" />
-        <div className="about-content section-content">
+        <FadeContent as="div" className="about-content section-content" threshold={0.12} stagger={110}>
           <div className="about-copy">
-            <SectionLabel>ABOUT US / 02</SectionLabel>
-            <h2 id="about-title" className="sr-only">
-              关于我们
-            </h2>
+            <SectionLabel>{t.labels.about}</SectionLabel>
+            <h2 id="about-title" className="sr-only">{t.nav.about}</h2>
             <BlurText
-              text="我们是硅芯智语"
+              key={`about-title-${language}`}
+              text={t.about.title}
               delay={80}
               animateBy="letters"
               direction="top"
+              keepWordsTogether={language === "en"}
               className="about-title"
             />
             <div className="about-lines">
-              <BlurText
-                text="一个由高中生组成的科技团队"
-                delay={38}
-                animateBy="letters"
-                direction="bottom"
-                className="about-line"
-              />
-              <BlurText
-                text="隶属于XINGJI Studio，"
-                delay={38}
-                animateBy="letters"
-                direction="bottom"
-                className="about-line"
-              />
-              <BlurText
-                text="正在进行AI等方面的开源项目开发"
-                delay={32}
-                animateBy="letters"
-                direction="bottom"
-                className="about-line"
-              />
-              <BlurText
-                text="欢迎每一个志同道合的朋友加入"
-                delay={32}
-                animateBy="letters"
-                direction="bottom"
-                className="about-line about-line-last"
-              />
+              {t.about.lines.map((line) => (
+                <BlurText
+                  key={`${language}-${line}`}
+                  text={line}
+                  delay={35}
+                  animateBy="letters"
+                  direction="bottom"
+                  keepWordsTogether={language === "en"}
+                  className="about-line"
+                />
+              ))}
             </div>
           </div>
           <div className="about-visual">
@@ -284,84 +497,124 @@ function App() {
               distortionScale={-120}
               mixBlendMode="screen"
             >
-              <img
-                className="about-image"
-                src={brandImage}
-                alt="SiliconLingua 与 XINGJI Studio 标识"
-              />
+              <img className="about-image" src={brandImage} alt={t.about.imageAlt} />
             </GlassSurface>
           </div>
-        </div>
+        </FadeContent>
       </section>
 
-      <section
-        className="members-section page-section"
-        id="members"
-        aria-labelledby="members-title"
-      >
+      <section className="members-section page-section" id="members" aria-labelledby="members-title">
         <ViewportBackground
           className="members-grid-background"
-          component={ShapeGrid}
-          speed={0.5}
-          squareSize={48}
-          direction="diagonal"
-          borderColor="rgba(110, 201, 211, 0.23)"
-          hoverFillColor="rgba(71, 208, 245, 0.24)"
-          shape="square"
-          hoverTrailAmount={5}
+          component={AeroShards}
+          shardColor="#9cc9ff"
+          accentColor="#38bdf8"
+          placement="left"
+          material="glass"
+          markers="plus"
+          count={1300}
+          depthOfField={0.75}
+          vignette={0.3}
+          mouseInteraction
+          pulseOnClick
+          holdToGather
+          spread={1.2}
+          speed={0.8}
+          parallax={1}
+          onError={(error) => console.error("AeroShards WebGPU initialization failed:", error)}
         />
         <div className="members-wash" aria-hidden="true" />
-        <div className="members-content section-content">
+        <FadeContent as="div" className="members-content section-content" threshold={0.12} stagger={65}>
           <div className="members-heading">
-            <SectionLabel>OUR MEMBERS / 03</SectionLabel>
-            <h2 id="members-title">我们的成员</h2>
+            <SectionLabel>{t.labels.members}</SectionLabel>
+            <h2 id="members-title">{t.members.title}</h2>
+            <p>{t.members.subtitle}</p>
           </div>
           <ul className="members-grid">
-            {members.map((member, index) => (
-              <li key={member.name}>
-                <GlassSurface
-                  className="member-surface"
-                  width="100%"
-                  height="100%"
-                  borderRadius={8}
-                  borderWidth={0.1}
-                  brightness={54}
-                  opacity={0.9}
-                  blur={10}
-                  backgroundOpacity={0.065}
-                  saturation={1.3}
-                  displace={1}
-                  distortionScale={-100}
-                  mixBlendMode="screen"
-                >
-                  <div
-                    className="member-row"
-                    style={{
-                      "--member-accent":
-                        memberAccents[index % memberAccents.length],
-                    }}
-                  >
-                    <div className="member-avatar" aria-hidden="true">
-                      <img src={brandImage} alt="" loading="lazy" />
-                      <span>{member.name.slice(0, 1)}</span>
-                    </div>
-                    <div className="member-info">
-                      <h3>{member.name}</h3>
-                      <p>{member.title}</p>
-                    </div>
+            {members.map(([name, handle], index) => (
+              <li key={handle} style={{ "--member-accent": memberAccents[index % memberAccents.length] }}>
+                <div className="member-row">
+                  <div className="member-avatar" aria-hidden="true">
+                    <img src={brandImage} alt="" loading="lazy" />
+                    <span>{name.slice(0, 1)}</span>
                   </div>
-                </GlassSurface>
+                  <div className="member-info">
+                    <h3>{name}</h3>
+                    <p>{t.members.roles[index]}</p>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>
-        </div>
+        </FadeContent>
       </section>
 
-      <section
-        className="llm-section page-section"
-        id="llm"
-        aria-labelledby="llm-title"
-      >
+      <section className="lmlab-section page-section" id="lmlab" aria-labelledby="lmlab-title">
+        <ViewportBackground
+          className="lmlab-background"
+          component={GhostFibers}
+          glowColor="#3612ff"
+          lineColor="#31ffff"
+          secondaryColor="#8670eb"
+          rotation={18}
+          rollSpeed={0.1}
+          layers={3}
+          waves={1}
+          twist={1.2}
+          threads={72}
+          flow={0.2}
+          fiberStyle="dots"
+          depthOfField={0.8}
+          particles={1}
+          sparkle={0.2}
+          foldGlow={1.6}
+          glow={2}
+          brightness={2}
+          vignette={0.5}
+          grain={0.16}
+          mouseInteraction
+          hoverEffect="focus"
+          intro
+          pulseOnClick
+        />
+        <div className="lmlab-wash" aria-hidden="true" />
+        <FadeContent as="div" className="lmlab-content section-content" threshold={0.12} stagger={120}>
+          <div className="lmlab-copy">
+            <SectionLabel>{t.labels.lmlab}</SectionLabel>
+            <p className="lmlab-kicker">{t.lmlab.english}</p>
+            <h2 id="lmlab-title">{t.lmlab.title}</h2>
+            <p className="lmlab-description">{t.lmlab.description}</p>
+            <div className="lmlab-actions" aria-label={t.lmlab.title}>
+              {t.lmlab.buttons.map((label) => (
+                <ActionButton key={label}>{label}</ActionButton>
+              ))}
+            </div>
+          </div>
+          <div className="lmlab-visual">
+            <CardSwap
+              className="lmlab-card-swap"
+              width={460}
+              height={306}
+              cardDistance={42}
+              verticalDistance={48}
+              depth={72}
+              skewAmount={3}
+              visibleCards={3}
+              delay={3600}
+              cardRadius={14}
+              hoverSpread={0.08}
+              dim={0.45}
+              items={[
+                { title: "LMLab · Overview", image: `${import.meta.env.BASE_URL}lmlab-overview.png`, alt: t.lmlab.imageAlt },
+                { title: "LMLab · Assets", image: `${import.meta.env.BASE_URL}lmlab-assets.png`, alt: t.lmlab.imageAlt },
+                { title: "LMLab · Runs", image: `${import.meta.env.BASE_URL}lmlab-runs.png`, alt: t.lmlab.imageAlt },
+              ]}
+            />
+          </div>
+        </FadeContent>
+      </section>
+
+      <section className="llm-section page-section" id="llm" aria-labelledby="llm-title">
         <ViewportBackground
           className="llm-background"
           component={WebThreads}
@@ -384,265 +637,150 @@ function App() {
           grain
           grainIntensity={0.05}
           mouseInteraction
-          mouseStrength={0.3}
+          mouseStrength={0.8}
         />
         <div className="llm-wash" aria-hidden="true" />
-        <div className="llm-content section-content">
-          <SectionLabel>OUR LANGUAGE MODEL / 04</SectionLabel>
-          <h2 id="llm-title">我们的LLM</h2>
-          <p className="llm-name">
-            SiliconLingua-S1 <span>（敬请期待）</span>
-          </p>
-          <p className="llm-description">
-            基于Qwen3-4b微调而成，提升数学与推理能力，将全量开源
-          </p>
-          <div className="llm-actions" aria-label="模型相关链接">
-            {[
-              ["modelscope", "dark"],
-              ["Huggingface", "dark"],
-              ["了解更多", "light"],
-            ].map(([label, tone]) => (
-              <GlassSurface
-                key={label}
-                className={`action-glass action-glass-${tone}`}
-                width={152}
-                height={50}
-                borderRadius={8}
-                borderWidth={0.12}
-                brightness={52}
-                opacity={0.9}
-                blur={10}
-                backgroundOpacity={0.04}
-                saturation={1.3}
-                displace={1}
-                distortionScale={-100}
-                mixBlendMode="screen"
-              >
-                <button
-                  className={`action-button action-button-${tone}`}
-                  type="button"
-                >
-                  {label}
-                </button>
-              </GlassSurface>
-            ))}
+        <FadeContent as="div" className="llm-content section-content" threshold={0.16} stagger={72}>
+          <SectionLabel>{t.labels.model}</SectionLabel>
+          <h2 id="llm-title">{t.model.title}</h2>
+          <p className="llm-name">{t.model.name} <span>{t.model.pending}</span></p>
+          <p className="llm-description">{t.model.description}</p>
+          <div className="llm-actions" aria-label={t.model.title}>
+            {t.model.buttons.map((label) => <ActionButton key={label}>{label}</ActionButton>)}
           </div>
-        </div>
+        </FadeContent>
       </section>
 
-      <section
-        className="developing-section page-section"
-        id="in-progress"
-        aria-labelledby="developing-title"
-      >
+      <section className="developing-section page-section" id="in-progress" aria-labelledby="developing-title">
         <ViewportBackground
           className="developing-background"
           component={Particles}
-          particleColors={particleColors}
-          particleCount={300}
+          particleColors={["#cbdce6", "#eae0ff", "#b2fdec"]}
+          particleCount={200}
           particleSpread={10}
           speed={0.1}
-          particleBaseSize={135}
+          particleBaseSize={85}
+          glow={1.3}
+          twinkle={0.3}
           moveParticlesOnHover
-          particleHoverFactor={1}
-          alphaParticles
-          disableRotation={false}
+          particleHoverFactor={1.35}
+          hoverEffect="parallax"
+          sizeRandomness={1.35}
+          shape="sparkle"
+          connections
         />
         <div className="developing-wash" aria-hidden="true" />
-        <div className="developing-content section-content">
+        <FadeContent as="div" className="developing-content section-content" threshold={0.12} stagger={110}>
           <div className="developing-heading">
-            <SectionLabel>IN PROGRESS / 06</SectionLabel>
-            <h2 id="developing-title">
-              <span>正在开发，</span>
-              <span>敬请期待</span>
-            </h2>
+            <SectionLabel>{t.labels.progress}</SectionLabel>
+            <h2 id="developing-title"><span>{t.progress.title[0]}</span><span>{t.progress.title[1]}</span></h2>
           </div>
           <div className="developing-projects">
-            <GlassSurface
-              className="developing-card"
-              width="100%"
-              height="100%"
-              borderRadius={8}
-              borderWidth={0.08}
-              brightness={62}
-              opacity={0.86}
-              blur={13}
-              backgroundOpacity={0.07}
-              saturation={1.25}
-              displace={2}
-              distortionScale={-120}
-              mixBlendMode="screen"
-            >
-              <article className="developing-card-content">
-                <Hand
-                  className="project-icon"
-                  size={36}
-                  strokeWidth={1.3}
-                  aria-hidden="true"
-                />
-                <h3>EMG肌电仿生义肢手</h3>
-              </article>
-            </GlassSurface>
-            <GlassSurface
-              className="developing-card"
-              width="100%"
-              height="100%"
-              borderRadius={8}
-              borderWidth={0.08}
-              brightness={62}
-              opacity={0.86}
-              blur={13}
-              backgroundOpacity={0.07}
-              saturation={1.25}
-              displace={2}
-              distortionScale={-120}
-              mixBlendMode="screen"
-            >
-              <article className="developing-card-content book-content">
-                <BookOpen
-                  className="project-icon"
-                  size={36}
-                  strokeWidth={1.3}
-                  aria-hidden="true"
-                />
-                <h3>我们的书籍</h3>
-                <p>从计算机基础到人工智能的 AI 实战图解</p>
-              </article>
-            </GlassSurface>
+            <article className="developing-card">
+              <Hand className="project-icon" size={36} strokeWidth={1.3} aria-hidden="true" />
+              <h3>{t.progress.hand}</h3>
+            </article>
+            <article className="developing-card book-content">
+              <BookOpen className="project-icon" size={36} strokeWidth={1.3} aria-hidden="true" />
+              <h3>{t.progress.book}</h3>
+              <p>{t.progress.bookDescription}</p>
+            </article>
           </div>
-        </div>
+        </FadeContent>
       </section>
 
-      <section
-        className="join-section page-section"
-        id="join-us"
-        aria-labelledby="join-title"
-      >
+      <section className="join-section page-section" id="join-us" aria-labelledby="join-title">
         <ViewportBackground
           className="join-background"
-          component={SoftAurora}
-          speed={0.6}
-          scale={1.5}
-          brightness={2.1}
-          color1="#f7f7f7"
-          color2="#e100ff"
-          noiseFrequency={2.5}
-          noiseAmplitude={1.25}
-          bandHeight={0.5}
-          bandSpread={0.75}
-          octaveDecay={0.1}
-          layerOffset={1.2}
-          colorSpeed={1}
-          enableMouseInteraction
-          mouseInfluence={0.25}
+          component={GradientBlinds}
+          gradientColors={["#b95bd4", "#5227FF"]}
+          angle={20}
+          blindCount={18}
+          blindMinWidth={70}
+          spotlightRadius={0.3}
+          shine={0.4}
+          relief={0.5}
+          glow={0.4}
+          sway={0.35}
+          hoverTilt={0.6}
+          clickEffect="ripple"
+          noise={0.3}
+          lightColor="#d1d1ff"
+          spotlightSoftness={1.1}
+          spotlightOpacity={0.4}
+          mouseDampening={0.2}
         />
         <div className="join-wash" aria-hidden="true" />
-        <div className="join-content section-content">
-          <SectionLabel>COMMUNITY / 07</SectionLabel>
-          <h2 id="join-title">加入我们</h2>
-          <p className="join-english">JOIN US</p>
-          <p className="join-description">我们欢迎每一位志同道合的朋友加入</p>
-          <GlassSurface
-            className="qq-glass"
-            width="min(440px, 100%)"
-            height="auto"
-            borderRadius={8}
-            brightness={52}
-            opacity={0.9}
-            blur={12}
-            backgroundOpacity={0.09}
-            displace={1}
-            distortionScale={-110}
-            mixBlendMode="screen"
-          >
-            <button className="qq-copy-button" type="button" onClick={copyQQ}>
-              {copied ? (
-                <Check size={18} aria-hidden="true" />
-              ) : (
-                <Copy size={18} aria-hidden="true" />
-              )}
-              <span aria-live="polite">
-                {copied
-                  ? "QQ群号已复制：202515095"
-                  : "请使用QQ加入社区群聊 202515095"}
-              </span>
-            </button>
-          </GlassSurface>
-        </div>
+        <FadeContent as="div" className="join-content section-content" threshold={0.16} stagger={95}>
+          <SectionLabel>{t.labels.community}</SectionLabel>
+          <h2 id="join-title">{t.join.title}</h2>
+          <p className="join-english">{t.join.english}</p>
+          <p className="join-description">{t.join.description}</p>
+          <ActionButton className="qq-copy-button" onClick={copyQQ} aria-live="polite">
+            {copied ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
+            <span>{copied ? t.join.copied : t.join.qq}</span>
+          </ActionButton>
+        </FadeContent>
       </section>
 
-      <section
-        className="partners-section page-section"
-        id="partners"
-        aria-labelledby="partners-title"
-      >
+      <section className="partners-section page-section" id="partners" aria-labelledby="partners-title">
         <ViewportBackground
           className="partners-background"
-          component={ShapeGrid}
-          direction="up"
-          speed={0.25}
-          squareSize={72}
-          borderColor="rgba(108, 205, 167, 0.2)"
-          hoverFillColor="rgba(108, 205, 167, 0.2)"
-          shape="square"
+          component={MagicRings}
+          color="#7dd3fc"
+          colorTwo="#d8b4fe"
+          ringCount={7}
+          motion="breathe"
+          speed={0.42}
+          lineThickness={1.7}
+          glow={1.2}
+          baseRadius={0.28}
+          radiusStep={0.1}
+          expansion={0.08}
+          taper={1.3}
+          rotation={10}
+          tilt={8}
+          dispersion={0.22}
+          grain={0.04}
+          opacity={0.9}
+          followMouse
+          mouseInfluence={0.23}
+          hoverScale={1.18}
+          hoverIntensity={1.2}
+          parallax={0.04}
+          clickBurst
+          intro
         />
         <div className="partners-wash" aria-hidden="true" />
-        <div className="partners-content section-content">
+        <FadeContent as="div" className="partners-content section-content" threshold={0.12} stagger={100}>
           <div className="partners-heading">
-            <SectionLabel>OUR PARTNERS / 08</SectionLabel>
-            <h2 id="partners-title">我们的合作伙伴</h2>
+            <SectionLabel>{t.labels.partners}</SectionLabel>
+            <h2 id="partners-title">{t.partners.title}</h2>
           </div>
           <div className="partners-grid">
             {partners.map((partner, index) => (
-              <GlassSurface
-                key={partner}
-                className="partner-card"
-                width="100%"
-                height="100%"
-                borderRadius={8}
-                borderWidth={0.08}
-                brightness={44}
-                opacity={0.9}
-                blur={10}
-                backgroundOpacity={0.09}
-                saturation={1.15}
-                displace={1}
-                distortionScale={-100}
-                mixBlendMode="screen"
-              >
+              <article className="partner-card" key={partner.name}>
                 <div className="partner-card-content">
-                  <div
-                    className="partner-logo-frame"
-                  >
-                    <img
-                      className="partner-logo"
-                      src={partner.logo}
-                      alt={`${partner.name} Logo`}
-                      loading="lazy"
-                      decoding="async"
-                    />
+                  <div className="partner-logo-frame">
+                    <img className="partner-logo" src={partner.logo} alt={`${partner.name} Logo`} loading="lazy" decoding="async" />
                   </div>
                   <div className="partner-meta">
                     <span className="partner-number">0{index + 1}</span>
                     <h3>{partner.name}</h3>
                   </div>
                 </div>
-              </GlassSurface>
+              </article>
             ))}
           </div>
-        </div>
+        </FadeContent>
       </section>
 
       <footer className="site-footer">
         <div className="footer-brand">
-          <span className="footer-mark" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-          <span>硅芯智语</span>
+          <span className="footer-mark" aria-hidden="true"><i /><i /><i /></span>
+          <span>{t.footer.brand}</span>
         </div>
-        <span className="footer-center">SILICONLINGUA</span>
+        <span className="footer-center">{t.footer.english}</span>
         <span className="footer-year">© 2026</span>
       </footer>
     </main>

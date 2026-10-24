@@ -1,8 +1,7 @@
 "use client";
-import { useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { ArrowUpRight, Star } from "lucide-react";
 import { gsap } from "gsap";
-import GlassSurface from "../GlassSurface/GlassSurface";
 import "./CardNav.css";
 
 const CardNav = ({
@@ -11,10 +10,9 @@ const CardNav = ({
   className = "",
   ease = "power3.out",
   menuColor = "#fff",
-  theme = "dark",
   language = "zh",
-  onThemeChange,
   onLanguageChange,
+  labels = {},
 }) => {
   const cardTints = ["#163b40", "#263852", "#2b4032", "#41344e"];
   const [open, setOpen] = useState(false);
@@ -28,40 +26,52 @@ const CardNav = ({
   useLayoutEffect(() => {
     const nav = navRef.current;
     const content = contentRef.current;
-    const height = () => 60 + content.offsetHeight;
+    const height = () => 60 + content.scrollHeight;
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const create = () => {
-      gsap.set(nav, { height: 60 });
-      gsap.set(cardsRef.current, { y: 20, opacity: 0 });
-      return gsap
-        .timeline({ paused: true, onReverseComplete: () => setExpanded(false) })
-        .to(nav, { height, duration: reduced ? 0 : 0.35, ease })
-        .to(
-          cardsRef.current,
-          {
-            y: 0,
-            opacity: 1,
-            duration: reduced ? 0 : 0.3,
-            stagger: reduced ? 0 : 0.045,
-            ease,
-          },
-          reduced ? 0 : "-=0.2",
-        );
-    };
-    timelineRef.current = create();
+    const cards = cardsRef.current.filter(Boolean);
+    gsap.set(nav, { height: 60 });
+    gsap.set(cards, { y: 16, autoAlpha: 0 });
+    timelineRef.current = gsap
+      .timeline({
+        paused: true,
+        onReverseComplete: () => {
+          if (!openRef.current) setExpanded(false);
+        },
+      })
+      .to(nav, { height, duration: reduced ? 0 : 0.56, ease: "power3.inOut" })
+      .to(
+        cards,
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: reduced ? 0 : 0.46,
+          stagger: reduced ? 0 : 0.055,
+          ease,
+        },
+        reduced ? 0 : "-=0.24",
+      );
     const resize = () => {
-      timelineRef.current.kill();
-      timelineRef.current = create();
-      if (openRef.current) timelineRef.current.progress(1);
+      if (openRef.current) {
+        gsap.to(nav, {
+          height: height(),
+          duration: reduced ? 0 : 0.22,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      }
     };
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(content);
     window.addEventListener("resize", resize);
     return () => {
       timelineRef.current?.kill();
+      gsap.killTweensOf(nav);
+      resizeObserver.disconnect();
       window.removeEventListener("resize", resize);
     };
-  }, [ease, items]);
+  }, [ease]);
   const changeMenu = (next) => {
     openRef.current = next;
     setOpen(next);
@@ -70,39 +80,40 @@ const CardNav = ({
       timelineRef.current?.play();
     } else timelineRef.current?.reverse();
   };
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const closeOnOutsidePointer = (event) => {
+      if (!navRef.current?.contains(event.target)) changeMenu(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key !== "Escape") return;
+      changeMenu(false);
+      navRef.current?.querySelector(".hamburger-menu")?.focus();
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer, true);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [open]);
   return (
     <div className={`card-nav-container ${className}`}>
       <nav
         ref={navRef}
         className={`card-nav ${expanded ? "open" : ""}`}
-        aria-label="主导航"
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            changeMenu(false);
-            navRef.current.querySelector(".hamburger-menu").focus();
-          }
-        }}
+        aria-label={labels.menu || "主导航"}
       >
-        <GlassSurface
-          className="card-nav-glass"
-          width="100%"
-          height={60}
-          borderRadius={8}
-          backgroundOpacity={0.1}
-          brightness={52}
-          opacity={0.9}
-          blur={12}
-          displace={0}
-          distortionScale={-90}
-          mixBlendMode="screen"
-          style={{ pointerEvents: "none" }}
-        />
+        <div className="card-nav-glass" aria-hidden="true" />
         <div className="card-nav-top">
           <button
             type="button"
             className={`hamburger-menu ${open ? "open" : ""}`}
             onClick={() => changeMenu(!openRef.current)}
-            aria-label={open ? "关闭菜单" : "打开菜单"}
+            aria-label={open ? labels.close || "关闭菜单" : labels.open || "打开菜单"}
             aria-expanded={open}
             aria-controls={contentId}
             style={{ color: menuColor }}
@@ -116,27 +127,9 @@ const CardNav = ({
             aria-label={logoAlt}
             onClick={() => changeMenu(false)}
           >
-            <img src="bg.png" alt="logo" className="logo-mark" />
+            <img src={`${import.meta.env.BASE_URL}bg.png`} alt="logo" className="logo-mark" />
           </a>
-          <div className="card-nav-controls" aria-label="显示与语言设置">
-            <button
-              type="button"
-              className={`nav-setting ${theme === "light" ? "active" : ""}`}
-              onClick={() => onThemeChange?.("light")}
-              aria-pressed={theme === "light"}
-            >
-              明
-            </button>
-            <span className="nav-setting-divider">|</span>
-            <button
-              type="button"
-              className={`nav-setting ${theme === "dark" ? "active" : ""}`}
-              onClick={() => onThemeChange?.("dark")}
-              aria-pressed={theme === "dark"}
-            >
-              暗
-            </button>
-            <span className="nav-setting-divider">·</span>
+          <div className="card-nav-controls" aria-label="语言 / Language">
             <button
               type="button"
               className={`nav-setting ${language === "en" ? "active" : ""}`}
@@ -166,30 +159,13 @@ const CardNav = ({
           {(items || []).map((item, index) => (
             <div
               className="nav-card"
-              key={`${item.label}-${index}`}
+              key={index}
               ref={(el) => {
                 cardsRef.current[index] = el;
               }}
               style={{ "--nav-tint": cardTints[index % cardTints.length] }}
             >
-              <GlassSurface
-                className="nav-card-glass"
-                enabled={expanded}
-                width="100%"
-                height="100%"
-                borderRadius={8}
-                borderWidth={0.08}
-                brightness={50}
-                opacity={0.9}
-                blur={7}
-                backgroundOpacity={0.16}
-                saturation={1.15}
-                displace={0.4}
-                distortionScale={-45}
-                greenOffset={4}
-                blueOffset={8}
-                mixBlendMode="screen"
-              >
+              <div className="nav-card-glass">
                 <div className="nav-card-body">
                   <div className="nav-card-label">{item.label}</div>
                   <div className="nav-card-links">
@@ -211,7 +187,7 @@ const CardNav = ({
                     ))}
                   </div>
                 </div>
-              </GlassSurface>
+              </div>
             </div>
           ))}
         </div>
