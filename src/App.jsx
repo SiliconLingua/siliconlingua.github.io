@@ -3,8 +3,9 @@ import { BookOpen, Check, Copy, Hand } from "lucide-react";
 import BlurText from "./components/BlurText/BlurText";
 import CardNav from "./components/CardNav/CardNav";
 import CardSwap from "./components/CardSwap";
-import FadeContent from "./components/FadeContent";
+import AnimatedContent from "./components/AnimatedContent";
 import GlassSurface from "./components/GlassSurface/GlassSurface";
+import ShinyText from "./components/ShinyText";
 import StarBorder from "./components/StarBorder";
 import ViewportBackground from "./components/ViewportBackground";
 import PageNavigation from "./components/PageNavigation";
@@ -264,7 +265,11 @@ function SectionLabel({ children }) {
       distortionScale={-90}
       mixBlendMode="screen"
     >
-      <p className="section-eyebrow">{children}</p>
+      <p className="section-eyebrow">
+        <ShinyText trigger="view" speed={4.8} color="rgba(255, 255, 255, 0.78)" shineColor="#ffffff">
+          {children}
+        </ShinyText>
+      </p>
     </GlassSurface>
   );
 }
@@ -401,7 +406,15 @@ function App() {
       />
 
       <section className="hero" id="top" aria-labelledby="hero-title">
-        <div className="hero-copy">
+        <AnimatedContent
+          as="div"
+          className="hero-copy"
+          distance={22}
+          duration={0.95}
+          blur={5}
+          stagger={0.1}
+          threshold={0.08}
+        >
           <BlurText
             key={`hero-title-${language}`}
             text={t.hero.title}
@@ -429,7 +442,7 @@ function App() {
             keepWordsTogether={language === "en"}
             className="hero-tagline"
           />
-        </div>
+        </AnimatedContent>
       </section>
 
       <section className="about-section page-section" id="team" aria-labelledby="about-title">
@@ -455,7 +468,7 @@ function App() {
           opacity={0.65}
         />
         <div className="section-wash" aria-hidden="true" />
-        <FadeContent as="div" className="about-content section-content" threshold={0.12} stagger={110}>
+        <AnimatedContent as="div" className="about-content section-content" distance={34} duration={0.9} blur={5} threshold={0.1} stagger={0.09}>
           <div className="about-copy">
             <SectionLabel>{t.labels.about}</SectionLabel>
             <h2 id="about-title" className="sr-only">{t.nav.about}</h2>
@@ -501,7 +514,7 @@ function App() {
               <img className="about-image" src={brandImage} alt={t.about.imageAlt} />
             </GlassSurface>
           </div>
-        </FadeContent>
+        </AnimatedContent>
       </section>
 
       <section className="members-section page-section" id="members" aria-labelledby="members-title">
@@ -525,7 +538,7 @@ function App() {
           onError={(error) => console.error("AeroShards WebGPU initialization failed:", error)}
         />
         <div className="members-wash" aria-hidden="true" />
-        <FadeContent as="div" className="members-content section-content" threshold={0.12} stagger={65}>
+        <AnimatedContent as="div" className="members-content section-content" distance={28} duration={0.72} blur={3} threshold={0.12} stagger={0.045}>
           <div className="members-heading">
             <SectionLabel>{t.labels.members}</SectionLabel>
             <h2 id="members-title">{t.members.title}</h2>
@@ -549,7 +562,7 @@ function App() {
               </li>
             ))}
           </ul>
-        </FadeContent>
+        </AnimatedContent>
       </section>
 
       <section className="lmlab-section page-section" id="lmlab" aria-labelledby="lmlab-title">
@@ -581,7 +594,7 @@ function App() {
           pulseOnClick
         />
         <div className="lmlab-wash" aria-hidden="true" />
-        <FadeContent as="div" className="lmlab-content section-content" threshold={0.12} stagger={120}>
+        <AnimatedContent as="div" className="lmlab-content section-content" distance={38} duration={0.92} blur={5} threshold={0.1} stagger={0.1}>
           <div className="lmlab-copy">
             <SectionLabel>{t.labels.lmlab}</SectionLabel>
             <p className="lmlab-kicker">{t.lmlab.english}</p>
@@ -614,7 +627,7 @@ function App() {
               ]}
             />
           </div>
-        </FadeContent>
+        </AnimatedContent>
       </section>
 
       <section className="llm-section page-section" id="llm" aria-labelledby="llm-title">
@@ -643,7 +656,7 @@ function App() {
           mouseStrength={0.8}
         />
         <div className="llm-wash" aria-hidden="true" />
-        <FadeContent as="div" className="llm-content section-content" threshold={0.16} stagger={72}>
+        <AnimatedContent as="div" className="llm-content section-content" distance={30} duration={0.82} blur={4} threshold={0.14} stagger={0.06}>
           <SectionLabel>{t.labels.model}</SectionLabel>
           <h2 id="llm-title">{t.model.title}</h2>
           <p className="llm-name">{t.model.name} <span>{t.model.pending}</span></p>
@@ -651,7 +664,7 @@ function App() {
           <div className="llm-actions" aria-label={t.model.title}>
             {t.model.buttons.map((label) => <ActionButton key={label}>{label}</ActionButton>)}
           </div>
-        </FadeContent>
+        </AnimatedContent>
       </section>
 
       <section className="developing-section page-section" id="in-progress" aria-labelledby="developing-title">
@@ -673,7 +686,7 @@ function App() {
           connections
         />
         <div className="developing-wash" aria-hidden="true" />
-        <FadeContent as="div" className="developing-content section-content" threshold={0.12} stagger={110}>
+        <AnimatedContent as="div" className="developing-content section-content" distance={32} duration={0.86} blur={4} threshold={0.1} stagger={0.075}>
           <div className="developing-heading">
             <SectionLabel>{t.labels.progress}</SectionLabel>
             <h2 id="developing-title"><span>{t.progress.title[0]}</span><span>{t.progress.title[1]}</span></h2>
@@ -689,7 +702,7 @@ function App() {
               <p>{t.progress.bookDescription}</p>
             </article>
           </div>
-        </FadeContent>
+        </AnimatedContent>
       </section>
 
       <section className="join-section page-section" id="join-us" aria-labelledby="join-title">
@@ -714,7 +727,7 @@ function App() {
           mouseDampening={0.2}
         />
         <div className="join-wash" aria-hidden="true" />
-        <FadeContent as="div" className="join-content section-content" threshold={0.16} stagger={95}>
+        <AnimatedContent as="div" className="join-content section-content" distance={26} duration={0.78} blur={3} threshold={0.14} stagger={0.065}>
           <SectionLabel>{t.labels.community}</SectionLabel>
           <h2 id="join-title">{t.join.title}</h2>
           <p className="join-english">{t.join.english}</p>
@@ -723,7 +736,7 @@ function App() {
             {copied ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
             <span>{copied ? t.join.copied : t.join.qq}</span>
           </ActionButton>
-        </FadeContent>
+        </AnimatedContent>
       </section>
 
       <section className="partners-section page-section" id="partners" aria-labelledby="partners-title">
@@ -755,7 +768,7 @@ function App() {
           intro
         />
         <div className="partners-wash" aria-hidden="true" />
-        <FadeContent as="div" className="partners-content section-content" threshold={0.12} stagger={100}>
+        <AnimatedContent as="div" className="partners-content section-content" distance={30} duration={0.82} blur={4} threshold={0.1} stagger={0.065}>
           <div className="partners-heading">
             <SectionLabel>{t.labels.partners}</SectionLabel>
             <h2 id="partners-title">{t.partners.title}</h2>
@@ -775,7 +788,7 @@ function App() {
               </article>
             ))}
           </div>
-        </FadeContent>
+        </AnimatedContent>
       </section>
 
       <footer className="site-footer">

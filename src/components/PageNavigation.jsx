@@ -10,7 +10,6 @@ export default function PageNavigation({ pages, language = "zh" }) {
   const activeRef = useRef(0);
   const targetRef = useRef(null);
   const tweenRef = useRef(null);
-  const entranceRef = useRef(null);
   const transitionRef = useRef(null);
   const routeTokenRef = useRef(0);
   const scrollValueRef = useRef({ y: 0 });
@@ -19,51 +18,10 @@ export default function PageNavigation({ pages, language = "zh" }) {
     document.documentElement.classList.remove("page-route-moving");
   }, []);
 
-  const playReveal = useCallback((index, previous) => {
-    const section = document.getElementById(pages[index]?.id);
-    const content = section?.querySelector(".section-content, .hero-copy");
-    if (!content?.animate) return;
-
-    entranceRef.current?.cancel();
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const direction = previous < index ? 1 : -1;
-    entranceRef.current = content.animate(
-      [
-        {
-          opacity: 0.08,
-          filter: "blur(16px) saturate(1.35)",
-          transform: `translate3d(0, ${direction * 64}px, 0) scale(0.9) rotateX(${direction * -3}deg)`,
-          clipPath: direction > 0 ? "inset(18% 0 0 0 round 18px)" : "inset(0 0 18% 0 round 18px)",
-        },
-        {
-          opacity: 0.72,
-          filter: "blur(4px) saturate(1.1)",
-          transform: `translate3d(0, ${direction * -8}px, 0) scale(1.015) rotateX(${direction * 1}deg)`,
-          clipPath: "inset(0 0 0 0 round 0px)",
-          offset: 0.68,
-        },
-        {
-          opacity: 1,
-          filter: "blur(0px) saturate(1)",
-          transform: "translate3d(0, 0, 0) scale(1) rotateX(0deg)",
-          clipPath: "inset(0 0 0 0 round 0px)",
-        },
-      ],
-      {
-        duration: 1120,
-        easing: PAGE_EASE,
-        fill: "both",
-      },
-    );
-  }, [pages]);
-
-  const setCurrentPage = useCallback((index, revealFrom = activeRef.current) => {
-    const previous = revealFrom;
+  const setCurrentPage = useCallback((index) => {
     activeRef.current = index;
     setActive(index);
-    playReveal(index, previous);
-  }, [playReveal]);
+  }, []);
 
   const revealRoute = useCallback((token) => {
     const overlay = transitionRef.current;
@@ -149,7 +107,6 @@ export default function PageNavigation({ pages, language = "zh" }) {
     const section = page && document.getElementById(page.id);
     if (!section || nextIndex === activeRef.current && targetRef.current === null) return;
 
-    const previousIndex = targetRef.current ?? activeRef.current;
     const currentScroll = window.scrollY;
     const top = Math.max(0, currentScroll + section.getBoundingClientRect().top);
     const distanceInViewports = Math.abs(top - currentScroll) / Math.max(window.innerHeight, 1);
@@ -163,7 +120,6 @@ export default function PageNavigation({ pages, language = "zh" }) {
     targetRef.current = nextIndex;
     activeRef.current = nextIndex;
     setActive(nextIndex);
-    entranceRef.current?.cancel();
     document.documentElement.classList.add("page-route-moving");
     window.history.replaceState(null, "", `#${page.id}`);
 
@@ -171,7 +127,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
       window.scrollTo({ top, left: 0, behavior: "auto" });
       targetRef.current = null;
       clearRouteMotion();
-      setCurrentPage(nextIndex, previousIndex);
+      setCurrentPage(nextIndex);
       return;
     }
 
@@ -180,7 +136,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
         if (token !== routeTokenRef.current) return;
         window.scrollTo({ top, left: 0, behavior: "auto" });
         targetRef.current = null;
-        setCurrentPage(nextIndex, previousIndex);
+        setCurrentPage(nextIndex);
       }, token);
       return;
     }
@@ -198,7 +154,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
         targetRef.current = null;
         window.scrollTo({ top, left: 0, behavior: "auto" });
         clearRouteMotion();
-        setCurrentPage(nextIndex, previousIndex);
+        setCurrentPage(nextIndex);
       },
     });
   }, [clearRouteMotion, coverRoute, pages, setCurrentPage]);
@@ -223,7 +179,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
       }, { index: 0, distance: Infinity });
 
       if (targetRef.current !== null || nearest.index === activeRef.current) return;
-      setCurrentPage(nearest.index, activeRef.current);
+      setCurrentPage(nearest.index);
     };
 
     const observeSections = () => {
@@ -237,7 +193,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
         if (!entering) return;
         const index = sections.indexOf(entering.target);
         if (index !== -1 && index !== activeRef.current) {
-          setCurrentPage(index, activeRef.current);
+          setCurrentPage(index);
         }
       }, {
         rootMargin: `-${inset}px 0px -${inset}px 0px`,
@@ -301,7 +257,6 @@ export default function PageNavigation({ pages, language = "zh" }) {
       targetRef.current = null;
       routeTokenRef.current += 1;
       transitionRef.current?.getAnimations().forEach((animation) => animation.cancel());
-      entranceRef.current?.cancel();
       clearRouteMotion();
       window.removeEventListener("resize", observeSections);
       window.removeEventListener("wheel", interruptScroll);

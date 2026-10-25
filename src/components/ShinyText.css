@@ -1,0 +1,49 @@
+.shiny-text {
+  display: inline-block;
+  color: var(--shiny-base, #b5b5b5);
+  background-image: linear-gradient(
+    var(--shiny-angle, 110deg),
+    var(--shiny-base, #b5b5b5) 0%,
+    var(--shiny-base, #b5b5b5) 38%,
+    var(--shiny-light, #fff) 50%,
+    var(--shiny-base, #b5b5b5) 62%,
+    var(--shiny-base, #b5b5b5) 100%
+  );
+  background-size: 230% 100%;
+  background-position: -130% 0;
+  background-repeat: no-repeat;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shiny-text--active {
+  animation: shiny-text-sweep var(--shiny-duration, 3.6s) ease-in-out var(--shiny-delay, 0s) infinite;
+}
+
+.shiny-text--view.shiny-text--active {
+  animation-name: shiny-text-sweep-once;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.shiny-text--hover:hover {
+  animation: shiny-text-sweep var(--shiny-duration, 3.6s) ease-in-out;
+}
+
+@keyframes shiny-text-sweep {
+  0%, 12% { background-position: 100% 0; }
+  88%, 100% { background-position: -130% 0; }
+}
+
+@keyframes shiny-text-sweep-once {
+  from { background-position: 100% 0; }
+  to { background-position: -130% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shiny-text--active,
+  .shiny-text--hover:hover {
+    animation: none;
+  }
+}
