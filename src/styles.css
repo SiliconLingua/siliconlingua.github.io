@@ -545,7 +545,7 @@ a {
   inset: 0;
 }
 .llm-background {
-  opacity: 1;
+  opacity: 0.84;
 }
 .llm-wash,
 .developing-wash,

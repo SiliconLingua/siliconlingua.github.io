@@ -79,12 +79,12 @@ const copy = {
         "核心开发者",
         "核心开发者",
         "核心开发者",
-        "核心开发者",
+        "核心工程师",
+        "核心工程师",
         "开发者",
         "开发者",
         "开发者",
-        "外部协作者",
-        "外部协作者",
+        "开发者",
         "外部协作者",
         "外部协作者",
       ],
@@ -188,7 +188,9 @@ const copy = {
         "Core developer",
         "Core developer",
         "Core developer",
-        "Core developer",
+        "Core engineer",
+        "Core engineer",
+        "Developer",
         "Developer",
         "Developer",
         "Developer",
@@ -245,23 +247,23 @@ const copy = {
 };
 
 const members = [
-  { name: "人朝的小郭同学", handle: "guo", qq: "1559689519", role: "核心开发者", roleEn: "Core developer" },
-  { name: "STLNathan", handle: "stlnathan", qq: "3112745008", role: "【总工】STL_Natha", roleEn: "Chief engineer · STL_Natha" },
-  { name: "小严awa", handle: "xiaoyanawa", qq: "3585302907", role: "核心开发者", roleEn: "Core developer" },
-  { name: "批扎狗", handle: "pizhagou", qq: "3565637168", role: "开发者", roleEn: "Developer" },
-  { name: "Tydecent", handle: "tydecent", qq: "3599150358", role: "开发者", roleEn: "Developer" },
-  { name: "Qi", handle: "qi", qq: "3949455390", role: "开发者", roleEn: "Developer" },
-  { name: "龙雀awa", handle: "longqueawa", qq: "3960080816", role: "开发者", roleEn: "Developer" },
-  { name: "狗修金的乖狐狸", handle: "gouxiu", qq: "3361390582", role: "开发者", roleEn: "Developer" },
-  { name: "DevNathan", handle: "devnathan", qq: "2644019891", role: "【总防】METQL", roleEn: "Defense lead · METQL" },
-  { name: "EcoSpace", handle: "ecospace", qq: "1984922167", role: "【总攻】EcoSpace", roleEn: "Attack lead · EcoSpace" },
-  { name: "希", handle: "xi", qq: "3678186568", role: "多智能体协同首", roleEn: "Multi-agent collaboration" },
-  { name: "芥子气实验室", handle: "jieziqi", qq: "3383960942", role: "开发者", roleEn: "Developer" },
-  { name: "MC-WIN", handle: "mcwin", qq: "3639506878", role: "开发者", roleEn: "Developer" },
-  { name: "『Amia』⁧~喵⁧", handle: "amia", qq: "904228000", role: "开发者", roleEn: "Developer" },
-  { name: "Liziyu352_", handle: "liziyu352", qq: "3158941721", role: "[萨博一]Liziyu352_", roleEn: "[Sabotage] Liziyu352_" },
-  { name: "EMPET", handle: "empet", qq: "692148287", role: "开发者", roleEn: "Developer" },
-  { name: "Patrick 2026", handle: "patrick2026", qq: "3821661994", role: "开发者", roleEn: "Developer" },
+  { name: "STLNathan", handle: "stlnathan", qq: "3112745008" },
+  { name: "人朝的小郭同学", handle: "guo", qq: "1559689519" },
+  { name: "小严awa", handle: "xiaoyanawa", qq: "3585302907" },
+  { name: "Qi", handle: "qi", qq: "3949455390" },
+  { name: "龙雀awa", handle: "longqueawa", qq: "3960080816" },
+  { name: "狗修金的乖狐狸", handle: "gouxiu", qq: "3361390582" },
+  { name: "METQL", handle: "metql", qq: "2644019891" },
+  { name: "EcoSpace", handle: "ecospace", qq: "1984922167" },
+  { name: "希", handle: "xi", qq: "3678186568" },
+  { name: "『Amia』⁧~喵⁧", handle: "amia", qq: "904228000" },
+  { name: "Liziyu352_", handle: "liziyu352", qq: "3158941721" },
+  { name: "Tydecent", handle: "tydecent", qq: "3599150358" },
+  { name: "芥子气实验室", handle: "jieziqi", qq: "3383960942" },
+  { name: "EMPET", handle: "empet", qq: "692148287" },
+  { name: "Patrick 2026", handle: "patrick2026", qq: "3821661994" },
+  { name: "批扎狗", handle: "pizhagou", qq: "3565637168" },
+  { name: "MC-WIN", handle: "mcwin", qq: "3639506878" },
 ];
 
 const partners = [
@@ -436,7 +438,7 @@ function App() {
   ], [t]);
 
   if (typeof window !== "undefined" && window.location.pathname.replace(/\/+$/, "").endsWith("/lmlab")) {
-    return <LMLabPage />;
+    return <LMLabPage language={language} onLanguageChange={setLanguage} />;
   }
 
   return (
@@ -619,13 +621,13 @@ function App() {
                 key={member.handle}
                 style={{
                   "--row-index": index,
-                  "--landscape-row-index": Math.floor(index / 2),
+                  "--landscape-row-index": index < 9 ? index : index - 9,
                 }}
               >
                 <span className="member-list-avatar-wrap">
                   <img
                     className="member-list-avatar"
-                    src={`https://q1.qlogo.cn/g?b=qq&nk=${member.qq}&s=0`}
+                    src={`${import.meta.env.BASE_URL}member-avatars/${member.handle}.jpg`}
                     alt=""
                     loading="lazy"
                     referrerPolicy="no-referrer"

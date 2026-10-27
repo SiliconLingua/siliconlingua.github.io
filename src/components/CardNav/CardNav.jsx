@@ -8,6 +8,7 @@ import "./CardNav.css";
 const CardNav = ({
   logoAlt = "Logo",
   logoSrc,
+  logoHref = "#top",
   items,
   className = "",
   ease = "power3.out",
@@ -191,7 +192,7 @@ const CardNav = ({
              </span>
            </button>
 
-          <a className="logo-container" href="#top" aria-label={logoAlt}>
+          <a className="logo-container" href={logoHref} aria-label={logoAlt}>
             {logoSrc ? <img className="logo-image" src={logoSrc} alt={logoAlt} /> : <span className="logo-text">{logoAlt}</span>}
           </a>
 

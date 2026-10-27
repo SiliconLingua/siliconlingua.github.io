@@ -1,14 +1,25 @@
 html.lmlab-route {
   scroll-snap-type: none;
+  scroll-behavior: smooth;
+}
+
+html.lmlab-route body {
+  background: #090814;
 }
 
 .lmlab-page {
+  --lmlab-ink: #f4f0ff;
+  --lmlab-muted: rgba(222, 216, 247, 0.66);
+  --lmlab-faint: rgba(201, 194, 231, 0.46);
+  --lmlab-line: rgba(204, 190, 255, 0.16);
+  --lmlab-lilac: #b9a9ff;
+  --lmlab-violet: #8a73ff;
   position: relative;
   isolation: isolate;
   min-height: 100vh;
-  overflow: hidden;
-  color: #edf8f7;
-  background: #080c0d;
+  overflow: clip;
+  color: var(--lmlab-ink);
+  background: #090814;
 }
 
 .lmlab-page::before,
@@ -20,230 +31,311 @@ html.lmlab-route {
 }
 
 .lmlab-page::before {
-  z-index: -1;
+  z-index: -2;
   background:
-    radial-gradient(circle at 74% 7%, rgba(116, 219, 225, 0.14), transparent 24%),
-    radial-gradient(circle at 14% 45%, rgba(74, 96, 196, 0.1), transparent 28%),
-    linear-gradient(130deg, #080c0d 0%, #0a1113 52%, #0a0d16 100%);
+    radial-gradient(ellipse at 77% 4%, rgba(97, 70, 196, 0.19), transparent 29%),
+    radial-gradient(ellipse at 15% 34%, rgba(65, 48, 147, 0.14), transparent 33%),
+    linear-gradient(143deg, #090814 0%, #0c0a1a 48%, #100d20 100%);
 }
 
 .lmlab-page::after {
-  z-index: 0;
-  opacity: 0.24;
-  background-image: radial-gradient(rgba(231, 255, 255, 0.55) 0.5px, transparent 0.7px);
+  z-index: -1;
+  opacity: 0.11;
+  background-image: radial-gradient(rgba(236, 230, 255, 0.58) 0.5px, transparent 0.7px);
   background-size: 5px 5px;
-  mix-blend-mode: overlay;
+  mix-blend-mode: screen;
+}
+
+.lmlab-page-color {
+  position: fixed;
+  z-index: -1;
+  inset: -8% -3%;
+  opacity: 0.37;
+  pointer-events: none;
+  filter: saturate(0.82);
+}
+
+.lmlab-page-color canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .lmlab-page-grid {
   position: fixed;
   z-index: -1;
   inset: 0;
-  opacity: 0.62;
+  opacity: 0.34;
   pointer-events: none;
 }
 
 .lmlab-page-grid .shapegrid-canvas {
   width: 100%;
   height: 100%;
-  opacity: 0.8;
+  opacity: 0.55;
 }
 
 .lmlab-page-veil {
   position: fixed;
   z-index: -1;
   inset: 0;
-  background: linear-gradient(180deg, rgba(8, 12, 13, 0.18), rgba(8, 12, 13, 0.78) 86%);
+  background:
+    linear-gradient(180deg, rgba(9, 8, 20, 0.08), rgba(9, 8, 20, 0.38) 46%, #090814 98%),
+    linear-gradient(90deg, rgba(9, 8, 20, 0.22), transparent 50%, rgba(9, 8, 20, 0.1));
   pointer-events: none;
 }
 
-.lmlab-page-header,
+.lmlab-site-nav {
+  top: 24px;
+  width: min(1240px, calc(100% - 80px));
+}
+
+.lmlab-site-nav .card-nav {
+  border-color: rgba(221, 213, 255, 0.2);
+  background: rgba(16, 13, 32, 0.36);
+  box-shadow: 0 16px 60px rgba(3, 1, 14, 0.34), inset 0 1px rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.lmlab-site-nav .card-nav-glass {
+  opacity: 0.62;
+}
+
+.lmlab-site-nav .card-nav-top {
+  padding-inline: 16px;
+}
+
+.lmlab-site-nav .logo-image {
+  width: clamp(152px, 17vw, 202px);
+  filter: drop-shadow(0 5px 18px rgba(11, 7, 32, 0.52));
+}
+
+.lmlab-site-nav .card-nav-controls {
+  color: rgba(239, 235, 255, 0.68);
+}
+
+.lmlab-site-nav .nav-setting:hover,
+.lmlab-site-nav .nav-setting.active {
+  color: #fff;
+}
+
+.lmlab-site-nav .nav-card-body {
+  background: linear-gradient(145deg, rgba(35, 28, 65, 0.52), rgba(15, 12, 30, 0.45));
+}
+
 .lmlab-page-hero,
 .lmlab-page-section,
+.lmlab-page-local,
 .lmlab-page-quickstart,
 .lmlab-page-footer {
   position: relative;
   z-index: 1;
   width: min(1240px, calc(100% - 80px));
-  margin: 0 auto;
-}
-
-.lmlab-page-header {
-  display: flex;
-  min-height: 76px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  border-bottom: 1px solid rgba(221, 252, 250, 0.14);
-  color: rgba(226, 247, 245, 0.68);
-  font-family: "DM Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.lmlab-wordmark {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: #efffff;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  white-space: nowrap;
-}
-
-.lmlab-wordmark-mark {
-  display: grid;
-  width: 25px;
-  height: 25px;
-  place-items: center;
-  border: 1px solid rgba(190, 243, 243, 0.52);
-  border-radius: 50%;
-  color: #b9f4f1;
-  font-size: 8px;
-  letter-spacing: 0;
-}
-
-.lmlab-header-status {
-  color: rgba(183, 234, 234, 0.45);
-}
-
-.lmlab-page-nav {
-  display: flex;
-  gap: 28px;
-  margin-left: auto;
-}
-
-.lmlab-page-nav a,
-.lmlab-back-link {
-  color: inherit;
-  transition: color 180ms ease;
-}
-
-.lmlab-page-nav a:hover,
-.lmlab-back-link:hover {
-  color: #c9fffb;
-}
-
-.lmlab-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(228, 250, 247, 0.84);
-  white-space: nowrap;
+  margin-inline: auto;
 }
 
 .lmlab-page-hero {
   display: grid;
-  min-height: 710px;
-  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+  min-height: min(940px, 100svh);
+  grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
   align-items: center;
-  gap: clamp(48px, 7vw, 110px);
-  padding: 78px 0 108px;
+  gap: clamp(48px, 6.2vw, 96px);
+  padding: 150px 0 110px;
 }
 
 .lmlab-page-hero-copy {
-  max-width: 570px;
+  max-width: 560px;
 }
 
 .lmlab-page-eyebrow {
-  margin: 0 0 24px;
-  color: rgba(180, 235, 235, 0.56);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 23px;
+  color: rgba(198, 185, 255, 0.76);
   font-family: "DM Mono", monospace;
   font-size: 10px;
-  letter-spacing: 0.2em;
-  line-height: 1.5;
+  letter-spacing: 0.17em;
+  line-height: 1.6;
+}
+
+.lmlab-page-eyebrow svg {
+  flex: 0 0 auto;
+  color: #c0b2ff;
 }
 
 .lmlab-page-hero h1,
 .lmlab-page-section-heading h2,
+.lmlab-page-local h2,
 .lmlab-page-quickstart h2 {
   margin: 0;
-  color: #f3ffff;
+  color: var(--lmlab-ink);
   font-family: Inter, "Noto Sans SC", sans-serif;
   font-weight: 500;
-  letter-spacing: -0.075em;
-  line-height: 0.96;
+  letter-spacing: -0.065em;
+  line-height: 1.05;
 }
 
 .lmlab-page-hero h1 {
   display: flex;
   flex-direction: column;
-  font-size: clamp(66px, 8vw, 126px);
+  font-size: clamp(42px, 4.2vw, 62px);
+  letter-spacing: -0.075em;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
 }
 
-.lmlab-page-hero h1 em,
-.lmlab-page-section-heading h2 em,
-.lmlab-page-quickstart h2 em {
-  color: #a9e9e7;
-  font-family: "Noto Sans SC", sans-serif;
+.lmlab-page-hero h1 em {
+  color: #bcaeff;
   font-style: normal;
   font-weight: 400;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.07em;
 }
 
 .lmlab-page-lede {
-  max-width: 510px;
-  margin: 36px 0 0;
-  color: rgba(224, 246, 244, 0.68);
-  font-family: "Noto Sans SC", sans-serif;
-  font-size: 16px;
-  line-height: 1.9;
+  max-width: 500px;
+  margin: 26px 0 0;
+  color: var(--lmlab-muted);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 15px;
+  line-height: 1.95;
 }
 
 .lmlab-page-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 22px;
-  margin-top: 38px;
+  gap: 12px;
+  margin-top: 30px;
 }
 
-.lmlab-page-primary,
-.lmlab-page-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 20px;
+.lmlab-glass-link {
+  position: relative;
+  display: inline-block;
   min-height: 48px;
-  padding: 0 18px;
-  border: 1px solid rgba(183, 244, 240, 0.4);
-  font-family: "DM Mono", monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+  overflow: visible;
+  border: 0;
+  border-radius: 14px;
+  color: #f5f1ff;
+  background: transparent;
+  box-shadow: none;
+  transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
 }
 
-.lmlab-page-primary {
-  color: #071112;
-  background: #b9f1ed;
-}
-
-.lmlab-page-secondary {
-  border-color: rgba(225, 252, 250, 0.2);
-  color: rgba(237, 255, 252, 0.74);
-}
-
-.lmlab-page-primary:hover,
-.lmlab-page-secondary:hover {
-  border-color: #d6fffb;
+.lmlab-glass-link:hover {
   transform: translateY(-2px);
 }
 
-.lmlab-page-primary:hover {
-  background: #e0fffb;
+.lmlab-glass-link:focus-visible,
+.lmlab-page a:focus-visible {
+  outline: 2px solid #d7ccff;
+  outline-offset: 4px;
 }
 
-.lmlab-page-secondary:hover {
-  background: rgba(195, 250, 246, 0.08);
+.lmlab-glass-surface {
+  position: relative !important;
+  inset: auto;
+  z-index: 0;
+  width: max-content !important;
+  height: auto !important;
+  opacity: 0.54;
+}
+
+.lmlab-glass-surface::after {
+  border-color: rgba(246, 243, 255, 0.18);
+}
+
+.lmlab-glass-surface > .glass-surface__content {
+  width: max-content;
+  height: auto;
+  padding: 0;
+}
+
+.lmlab-glass-content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 16px;
+  color: inherit;
+  font-family: "DM Mono", "Noto Sans SC", monospace;
+  font-size: 11px;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+}
+
+.lmlab-glass-content svg {
+  flex: 0 0 auto;
+  color: #cfc3ff;
+}
+
+.lmlab-glass-link-primary {
+  border-color: rgba(207, 194, 255, 0.62);
+  background: linear-gradient(115deg, rgba(132, 107, 238, 0.29), rgba(96, 76, 185, 0.2));
+}
+
+.lmlab-glass-link-primary .lmlab-glass-content {
+  font-weight: 500;
+}
+
+.lmlab-page-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 42px;
+  padding-top: 19px;
+  border-top: 1px solid var(--lmlab-line);
+}
+
+.lmlab-page-fact {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.lmlab-page-fact > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(241, 236, 255, 0.86);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.lmlab-page-fact svg {
+  flex: 0 0 auto;
+  color: #b4a4ff;
+}
+
+.lmlab-page-fact small {
+  color: var(--lmlab-faint);
+  font-size: 10px;
+  line-height: 1.55;
 }
 
 .lmlab-page-hero-visual {
   position: relative;
+  min-width: 0;
   margin: 0;
-  padding: 14px;
-  border: 1px solid rgba(190, 244, 240, 0.2);
-  background: rgba(7, 20, 21, 0.44);
-  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  transform: rotate(1.5deg);
+  padding: 13px;
+  border: 1px solid rgba(206, 194, 255, 0.25);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(29, 24, 55, 0.84), rgba(12, 10, 26, 0.72));
+  box-shadow: 0 38px 100px rgba(2, 1, 10, 0.48), inset 0 1px rgba(255, 255, 255, 0.08);
+  transform: rotate(0.8deg);
+}
+
+.lmlab-page-hero-visual::before {
+  position: absolute;
+  z-index: -1;
+  inset: -24px -20px 24px 30px;
+  border: 1px solid rgba(175, 156, 255, 0.13);
+  border-radius: 22px;
+  content: "";
 }
 
 .lmlab-page-visual-topline,
@@ -251,411 +343,997 @@ html.lmlab-route {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  color: rgba(191, 237, 234, 0.5);
+  gap: 14px;
+  color: rgba(208, 198, 246, 0.62);
   font-family: "DM Mono", monospace;
   font-size: 9px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.095em;
 }
 
 .lmlab-page-visual-topline {
-  min-height: 28px;
-  padding: 0 4px 10px;
+  min-height: 29px;
+  padding: 0 3px 9px;
 }
 
-.lmlab-page-hero-image-wrap {
+.lmlab-page-visual-topline > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-align: right;
+}
+
+.lmlab-page-visual-topline i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ae9bff;
+  box-shadow: 0 0 12px #8b75ff;
+}
+
+.lmlab-page-hero-image-wrap,
+.lmlab-page-gallery-image-wrap {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(215, 255, 251, 0.16);
-  background: #11191a;
+  border: 1px solid rgba(211, 201, 255, 0.2);
+  border-radius: 9px;
+  background: #111020;
 }
 
 .lmlab-page-hero-image-wrap img {
   display: block;
   width: 100%;
   height: auto;
-  opacity: 0.94;
   filter: saturate(0.9) contrast(1.02);
 }
 
 .lmlab-page-image-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(176, 255, 248, 0.08), transparent 32%, rgba(112, 132, 255, 0.08));
+  background: linear-gradient(135deg, rgba(188, 171, 255, 0.08), transparent 42%, rgba(133, 112, 255, 0.08));
   pointer-events: none;
 }
 
 .lmlab-page-hero-visual figcaption {
   min-height: 36px;
-  padding: 10px 4px 0;
+  padding: 10px 3px 0;
+  letter-spacing: 0.035em;
+}
+
+.lmlab-page-visual-orbit {
+  position: absolute;
+  z-index: -1;
+  top: -54px;
+  right: -45px;
+  width: 146px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(190, 172, 255, 0.14);
+  border-radius: 50%;
+  box-shadow: 0 0 55px rgba(123, 99, 238, 0.11), inset 0 0 38px rgba(123, 99, 238, 0.08);
 }
 
 .lmlab-page-section {
-  padding: 110px 0;
-  border-top: 1px solid rgba(216, 251, 247, 0.13);
-}
-
-.lmlab-page-intro {
   display: grid;
-  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
-  gap: clamp(48px, 8vw, 140px);
+  grid-template-columns: minmax(230px, 0.68fr) minmax(0, 1.32fr);
+  gap: clamp(44px, 8vw, 126px);
+  padding: 112px 0 122px;
+  border-top: 1px solid var(--lmlab-line);
 }
 
 .lmlab-page-section-heading h2,
+.lmlab-page-local h2,
 .lmlab-page-quickstart h2 {
-  font-size: clamp(46px, 5.2vw, 78px);
+  font-size: clamp(42px, 4.4vw, 66px);
+  white-space: pre-line;
+}
+
+.lmlab-page-section-heading h2,
+.lmlab-page-local h2,
+.lmlab-page-quickstart h2 {
+  letter-spacing: -0.075em;
+  line-height: 1.12;
+}
+
+.lmlab-page-capability-content {
+  min-width: 0;
+}
+
+.lmlab-page-section-intro {
+  max-width: 700px;
+  margin: 0 0 27px;
+  color: var(--lmlab-muted);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 14px;
+  line-height: 1.85;
 }
 
 .lmlab-page-feature-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .lmlab-page-feature {
   position: relative;
   display: flex;
-  min-height: 286px;
+  min-height: 222px;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
-  border-top: 1px solid rgba(216, 251, 247, 0.4);
-  background: linear-gradient(145deg, rgba(171, 244, 237, 0.07), rgba(8, 14, 17, 0.18) 50%);
-  transition: background 200ms ease, transform 200ms ease;
+  gap: 20px;
+  padding: 19px 20px 18px;
+  overflow: hidden;
+  border: 1px solid rgba(207, 194, 255, 0.14);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(31, 25, 58, 0.68), rgba(16, 13, 31, 0.52));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
+  transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.lmlab-page-feature::after {
+  position: absolute;
+  top: -46px;
+  right: -50px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(143, 117, 255, 0.12), transparent 68%);
+  content: "";
+  pointer-events: none;
 }
 
 .lmlab-page-feature:hover {
-  background: linear-gradient(145deg, rgba(171, 244, 237, 0.14), rgba(8, 14, 17, 0.24) 50%);
-  transform: translateY(-5px);
+  transform: translateY(-3px);
+  border-color: rgba(195, 177, 255, 0.36);
+  background: linear-gradient(145deg, rgba(40, 32, 75, 0.78), rgba(19, 15, 38, 0.62));
+}
+
+.lmlab-page-feature-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lmlab-page-feature-icon,
+.lmlab-page-matrix-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(191, 174, 255, 0.25);
+  border-radius: 10px;
+  color: #c2b4ff;
+  background: rgba(134, 110, 229, 0.12);
 }
 
 .lmlab-page-feature-number {
-  color: #a7e8e5;
+  color: rgba(195, 181, 245, 0.46);
   font-family: "DM Mono", monospace;
-  font-size: 11px;
+  font-size: 10px;
 }
 
-.lmlab-page-feature p {
-  margin: 0 0 13px;
-  color: rgba(176, 233, 230, 0.48);
+.lmlab-page-feature p,
+.lmlab-page-gallery-grid figcaption > span {
+  margin: 0 0 9px;
+  color: rgba(194, 179, 248, 0.6);
   font-family: "DM Mono", monospace;
   font-size: 9px;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
 }
 
 .lmlab-page-feature h3 {
   margin: 0;
-  color: #f0fffc;
-  font-family: "Noto Sans SC", sans-serif;
-  font-size: 24px;
+  color: #f3efff;
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 20px;
   font-weight: 500;
 }
 
-.lmlab-page-feature div > span {
+.lmlab-page-feature > div:not(.lmlab-page-feature-top) > span {
   display: block;
-  margin-top: 16px;
-  color: rgba(222, 246, 242, 0.58);
-  font-family: "Noto Sans SC", sans-serif;
-  font-size: 13px;
-  line-height: 1.75;
+  margin-top: 11px;
+  color: rgba(222, 216, 244, 0.63);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 12px;
+  line-height: 1.78;
 }
 
 .lmlab-page-feature-arrow {
   align-self: flex-end;
-  color: rgba(185, 242, 237, 0.66);
-  font-size: 18px;
+  color: rgba(199, 185, 255, 0.72);
+}
+
+.lmlab-page-task-matrix {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(180px, 0.85fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 14px;
+  padding: 20px;
+  border: 1px solid rgba(207, 194, 255, 0.15);
+  border-radius: 12px;
+  background: rgba(16, 13, 32, 0.52);
+}
+
+.lmlab-page-task-matrix > div:first-child {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.lmlab-page-matrix-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.lmlab-page-task-matrix h3 {
+  margin: 1px 0 8px;
+  color: #f1edff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.lmlab-page-task-matrix p {
+  max-width: 455px;
+  margin: 0;
+  color: var(--lmlab-muted);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.lmlab-page-task-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.lmlab-page-task-tags span {
+  padding: 6px 8px;
+  border: 1px solid rgba(194, 177, 255, 0.19);
+  border-radius: 999px;
+  color: rgba(222, 215, 249, 0.77);
+  background: rgba(124, 99, 221, 0.1);
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  white-space: nowrap;
 }
 
 .lmlab-page-gallery {
-  display: grid;
-  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
-  gap: clamp(48px, 8vw, 140px);
   align-items: start;
 }
 
 .lmlab-page-gallery-heading > p:last-child {
-  max-width: 310px;
-  margin: 28px 0 0;
-  color: rgba(220, 245, 241, 0.56);
-  font-family: "Noto Sans SC", sans-serif;
-  font-size: 14px;
-  line-height: 1.8;
+  max-width: 330px;
+  margin: 24px 0 0;
+  color: var(--lmlab-muted);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 13px;
+  line-height: 1.85;
 }
 
 .lmlab-page-gallery-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 16px;
+  min-width: 0;
 }
 
 .lmlab-page-gallery-grid figure {
+  min-width: 0;
   margin: 0;
 }
 
-.lmlab-page-gallery-grid figure:first-child {
-  transform: translateY(56px);
+.lmlab-page-gallery-card-1 {
+  transform: translateY(34px);
 }
 
-.lmlab-page-gallery-grid img {
+.lmlab-page-gallery-image-wrap {
+  aspect-ratio: 1.16;
+  border-radius: 10px;
+  box-shadow: 0 20px 55px rgba(2, 1, 10, 0.25);
+}
+
+.lmlab-page-gallery-image-wrap img {
   display: block;
   width: 100%;
-  aspect-ratio: 1.28;
+  height: 100%;
   object-fit: cover;
-  border: 1px solid rgba(214, 253, 248, 0.18);
-  background: #12191b;
+  object-position: top left;
+  transition: transform 450ms cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+.lmlab-page-gallery-card:hover img {
+  transform: scale(1.025);
+}
+
+.lmlab-page-gallery-image-wrap > span {
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  display: grid;
+  width: 29px;
+  height: 29px;
+  place-items: center;
+  border: 1px solid rgba(225, 216, 255, 0.28);
+  border-radius: 50%;
+  color: #f6f3ff;
+  background: rgba(14, 11, 29, 0.73);
+  backdrop-filter: blur(12px);
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
 }
 
 .lmlab-page-gallery-grid figcaption {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  padding: 14px 2px 0;
+  gap: 5px;
+  padding: 13px 2px 0;
 }
 
-.lmlab-page-gallery-grid figcaption span {
-  color: rgba(172, 228, 225, 0.5);
-  font-family: "DM Mono", monospace;
-  font-size: 9px;
-  letter-spacing: 0.16em;
+.lmlab-page-gallery-grid figcaption > span {
+  margin: 0;
 }
 
 .lmlab-page-gallery-grid figcaption strong {
-  color: rgba(237, 255, 252, 0.82);
-  font-family: "Noto Sans SC", sans-serif;
-  font-size: 13px;
+  color: rgba(241, 237, 255, 0.9);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 12px;
   font-weight: 400;
+  line-height: 1.65;
 }
 
 .lmlab-page-workflow {
-  display: grid;
-  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
-  gap: clamp(48px, 8vw, 140px);
+  align-items: start;
+}
+
+.lmlab-page-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 25px;
+  color: rgba(211, 199, 255, 0.78);
+  font-family: "DM Mono", "Noto Sans SC", monospace;
+  font-size: 10px;
+  letter-spacing: 0.045em;
+  transition: color 180ms ease, gap 180ms ease;
+}
+
+.lmlab-page-text-link:hover {
+  gap: 13px;
+  color: #f1edff;
 }
 
 .lmlab-page-workflow-list {
-  border-top: 1px solid rgba(213, 250, 245, 0.18);
+  border-top: 1px solid rgba(207, 194, 255, 0.2);
 }
 
 .lmlab-page-workflow-item {
   display: grid;
-  grid-template-columns: 48px minmax(120px, 0.5fr) minmax(0, 1fr);
-  gap: 18px;
-  align-items: baseline;
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(213, 250, 245, 0.13);
+  grid-template-columns: 38px 1px minmax(120px, 0.57fr) minmax(0, 1fr);
+  gap: 17px;
+  align-items: center;
+  min-height: 76px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(207, 194, 255, 0.15);
 }
 
-.lmlab-page-workflow-item > span {
-  color: #a7e8e5;
+.lmlab-page-workflow-number {
+  color: #b9a9ff;
   font-family: "DM Mono", monospace;
-  font-size: 10px;
+  font-size: 11px;
+}
+
+.lmlab-page-workflow-line {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(180deg, rgba(182, 163, 255, 0.68), rgba(182, 163, 255, 0.08));
 }
 
 .lmlab-page-workflow-item h3 {
   margin: 0;
-  color: rgba(238, 255, 252, 0.88);
-  font-family: "Noto Sans SC", sans-serif;
-  font-size: 16px;
+  color: rgba(243, 240, 255, 0.91);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 14px;
   font-weight: 500;
 }
 
 .lmlab-page-workflow-item p {
   margin: 0;
-  color: rgba(218, 242, 238, 0.52);
-  font-family: "Noto Sans SC", sans-serif;
+  color: var(--lmlab-muted);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.lmlab-page-local {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(330px, 0.95fr);
+  gap: clamp(48px, 9vw, 140px);
+  align-items: center;
+  padding: 112px 0 120px;
+  border-top: 1px solid var(--lmlab-line);
+}
+
+.lmlab-page-local-copy > p:not(.lmlab-page-eyebrow) {
+  max-width: 570px;
+  margin: 23px 0 0;
+  color: var(--lmlab-muted);
+  font-family: "Noto Sans SC", Inter, sans-serif;
   font-size: 13px;
+  line-height: 1.9;
+}
+
+.lmlab-page-local-copy ul {
+  display: grid;
+  gap: 13px;
+  margin: 25px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lmlab-page-local-copy li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: rgba(229, 224, 249, 0.76);
+  font-size: 11px;
   line-height: 1.7;
+}
+
+.lmlab-page-local-copy li svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #b8a7ff;
+}
+
+.lmlab-page-settings-card {
+  position: relative;
+  display: flex;
+  min-height: 300px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 25px;
+  padding: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(207, 194, 255, 0.23);
+  border-radius: 17px;
+  background: linear-gradient(147deg, rgba(37, 30, 72, 0.77), rgba(14, 12, 29, 0.72));
+  box-shadow: 0 30px 80px rgba(2, 1, 10, 0.29), inset 0 1px rgba(255, 255, 255, 0.055);
+}
+
+.lmlab-page-settings-orb {
+  display: grid;
+  width: 55px;
+  height: 55px;
+  place-items: center;
+  border: 1px solid rgba(202, 190, 255, 0.26);
+  border-radius: 17px;
+  color: #c9bbff;
+  background: linear-gradient(145deg, rgba(145, 119, 246, 0.24), rgba(89, 70, 165, 0.13));
+  box-shadow: 0 0 35px rgba(124, 96, 232, 0.14);
+}
+
+.lmlab-page-settings-card > div:nth-child(2) > span {
+  color: rgba(195, 181, 245, 0.57);
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.lmlab-page-settings-card h3 {
+  margin: 8px 0 7px;
+  color: #f3efff;
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 21px;
+  font-weight: 500;
+}
+
+.lmlab-page-settings-card p {
+  max-width: 390px;
+  margin: 0;
+  color: var(--lmlab-muted);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.lmlab-page-theme-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.lmlab-page-theme-options > span {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+  border: 1px solid rgba(209, 197, 255, 0.15);
+  border-radius: 8px;
+  color: rgba(219, 212, 243, 0.66);
+  background: rgba(12, 10, 27, 0.48);
+  font-size: 9px;
+}
+
+.lmlab-page-theme-options > span.active {
+  border-color: rgba(193, 177, 255, 0.43);
+  color: #eeeaff;
+  background: rgba(130, 105, 226, 0.21);
+}
+
+.lmlab-page-theme-options > span.active svg:last-child {
+  color: #c9bbff;
+}
+
+.lmlab-page-settings-glow {
+  position: absolute;
+  top: -120px;
+  right: -110px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(143, 118, 247, 0.18), transparent 69%);
+  pointer-events: none;
 }
 
 .lmlab-page-quickstart {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
-  gap: clamp(48px, 10vw, 180px);
-  align-items: end;
-  padding: 120px 0 150px;
-  border-top: 1px solid rgba(216, 251, 247, 0.13);
+  grid-template-columns: minmax(0, 0.9fr) minmax(390px, 1.1fr);
+  gap: clamp(50px, 9vw, 145px);
+  align-items: center;
+  padding: 112px 0 130px;
+  border-top: 1px solid var(--lmlab-line);
 }
 
-.lmlab-page-quickstart > div:first-child > p:last-child {
-  max-width: 470px;
-  margin: 28px 0 0;
-  color: rgba(220, 245, 241, 0.58);
-  font-family: "Noto Sans SC", sans-serif;
-  font-size: 14px;
-  line-height: 1.8;
+.lmlab-page-quickstart-copy > p:not(.lmlab-page-eyebrow) {
+  max-width: 460px;
+  margin: 22px 0 0;
+  color: var(--lmlab-muted);
+  font-family: "Noto Sans SC", Inter, sans-serif;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.lmlab-glass-link-compact {
+  min-height: 42px;
+  margin-top: 23px;
+  border-radius: 11px;
+}
+
+.lmlab-glass-link-compact .lmlab-glass-content {
+  min-height: 40px;
+  font-size: 10px;
 }
 
 .lmlab-page-code-block {
   display: flex;
-  min-height: 176px;
+  min-width: 0;
   flex-direction: column;
-  justify-content: center;
-  gap: 13px;
-  padding: 24px;
-  border: 1px solid rgba(180, 240, 236, 0.2);
-  background: rgba(4, 12, 14, 0.72);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  gap: 22px;
+  padding: 22px 24px 20px;
+  border: 1px solid rgba(207, 194, 255, 0.22);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(20, 17, 40, 0.93), rgba(11, 9, 23, 0.91));
+  box-shadow: 0 25px 72px rgba(2, 1, 10, 0.32), inset 0 1px rgba(255, 255, 255, 0.04);
 }
 
-.lmlab-page-code-label,
-.lmlab-page-code-note {
-  color: rgba(171, 229, 225, 0.5);
+.lmlab-page-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(202, 191, 242, 0.62);
   font-family: "DM Mono", monospace;
   font-size: 9px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.13em;
+}
+
+.lmlab-page-code-dots {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.lmlab-page-code-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(203, 192, 242, 0.34);
+}
+
+.lmlab-page-code-dots i:first-child {
+  background: #b6a4ff;
+}
+
+.lmlab-page-code-commands {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
 }
 
 .lmlab-page-code-block code {
-  color: #dbfffa;
+  display: grid;
+  grid-template-columns: 24px 13px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  min-width: 0;
+  color: #e6e0ff;
   font-family: "DM Mono", monospace;
-  font-size: 13px;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.lmlab-page-code-block code > span {
+  color: rgba(177, 163, 224, 0.45);
+  font-size: 9px;
 }
 
 .lmlab-page-code-block code i {
-  margin-right: 9px;
-  color: #a7e8e5;
+  color: #b9a8ff;
   font-style: normal;
 }
 
 .lmlab-page-code-note {
-  margin-top: 6px;
-  color: rgba(171, 229, 225, 0.36);
-  letter-spacing: 0.08em;
+  padding-top: 14px;
+  border-top: 1px solid rgba(207, 194, 255, 0.12);
+  color: rgba(195, 185, 225, 0.43);
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.03em;
+  line-height: 1.65;
 }
 
 .lmlab-page-footer {
   display: flex;
-  min-height: 82px;
+  min-height: 86px;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  border-top: 1px solid rgba(216, 251, 247, 0.13);
-  color: rgba(193, 232, 229, 0.46);
+  gap: 20px;
+  border-top: 1px solid var(--lmlab-line);
+  color: rgba(199, 191, 224, 0.48);
   font-family: "DM Mono", monospace;
   font-size: 9px;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
-@media (max-width: 820px) {
-  .lmlab-page-header,
+.lmlab-page-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(237, 233, 255, 0.77);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.lmlab-page-footer-brand img {
+  display: block;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.lmlab-page-footer .lmlab-page-text-link {
+  margin: 0;
+  font-size: 9px;
+}
+
+@media (max-width: 1000px) {
+  .lmlab-page-hero {
+    min-height: auto;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 42px;
+    padding-top: 150px;
+  }
+
+  .lmlab-page-hero h1 {
+    font-size: clamp(42px, 4.6vw, 58px);
+  }
+
+  .lmlab-page-section {
+    grid-template-columns: minmax(200px, 0.62fr) minmax(0, 1.38fr);
+    gap: 44px;
+  }
+
+  .lmlab-page-section-heading h2,
+  .lmlab-page-local h2,
+  .lmlab-page-quickstart h2 {
+    font-size: clamp(40px, 5vw, 54px);
+  }
+
+  .lmlab-page-local {
+    gap: 46px;
+  }
+
+  .lmlab-page-task-matrix {
+    grid-template-columns: 1fr;
+  }
+
+  .lmlab-page-task-tags {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .lmlab-site-nav {
+    top: 15px;
+    width: calc(100% - 32px);
+  }
+
+  .lmlab-site-nav .card-nav-top {
+    padding-inline: 10px;
+  }
+
+  .lmlab-site-nav .logo-image {
+    width: 142px;
+  }
+
   .lmlab-page-hero,
   .lmlab-page-section,
+  .lmlab-page-local,
+  .lmlab-page-quickstart,
+  .lmlab-page-footer {
+    width: calc(100% - 40px);
+  }
+
+  .lmlab-page-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 48px;
+    padding: 132px 0 82px;
+  }
+
+  .lmlab-page-hero-copy {
+    max-width: 620px;
+  }
+
+  .lmlab-page-hero h1 {
+    max-width: 620px;
+    font-size: clamp(44px, 8vw, 64px);
+  }
+
+  .lmlab-page-lede {
+    max-width: 620px;
+    margin-top: 22px;
+    font-size: 14px;
+  }
+
+  .lmlab-page-facts {
+    margin-top: 30px;
+  }
+
+  .lmlab-page-hero-visual {
+    transform: rotate(0.25deg);
+  }
+
+  .lmlab-page-section,
+  .lmlab-page-local,
+  .lmlab-page-quickstart {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 34px;
+    padding: 78px 0 86px;
+  }
+
+  .lmlab-page-section-heading h2,
+  .lmlab-page-local h2,
+  .lmlab-page-quickstart h2 {
+    font-size: clamp(42px, 8.3vw, 60px);
+  }
+
+  .lmlab-page-section-intro {
+    margin-bottom: 22px;
+  }
+
+  .lmlab-page-feature {
+    min-height: 208px;
+  }
+
+  .lmlab-page-gallery-heading > p:last-child {
+    max-width: 550px;
+    margin-top: 17px;
+  }
+
+  .lmlab-page-gallery-card-1 {
+    transform: none;
+  }
+
+  .lmlab-page-workflow-item {
+    grid-template-columns: 32px 1px minmax(92px, 0.55fr) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .lmlab-page-local {
+    gap: 30px;
+  }
+
+  .lmlab-page-settings-card {
+    min-height: 270px;
+  }
+
+  .lmlab-page-quickstart {
+    gap: 30px;
+    padding-bottom: 84px;
+  }
+}
+
+@media (max-width: 540px) {
+  .lmlab-page-hero,
+  .lmlab-page-section,
+  .lmlab-page-local,
   .lmlab-page-quickstart,
   .lmlab-page-footer {
     width: calc(100% - 36px);
   }
 
-  .lmlab-page-header {
-    min-height: 64px;
-  }
-
-  .lmlab-header-status,
-  .lmlab-page-nav {
-    display: none;
-  }
-
   .lmlab-page-hero {
-    display: flex;
-    min-height: auto;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 56px;
-    padding: 86px 0 100px;
+    gap: 39px;
+    padding-top: 121px;
+  }
+
+  .lmlab-page-eyebrow {
+    margin-bottom: 17px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
   }
 
   .lmlab-page-hero h1 {
-    font-size: clamp(60px, 17vw, 104px);
+    font-size: clamp(42px, 9.4vw, 52px);
+    letter-spacing: -0.065em;
   }
 
   .lmlab-page-lede {
-    margin-top: 28px;
-    font-size: 14px;
-    line-height: 1.8;
+    margin-top: 17px;
+    font-size: 13px;
+    line-height: 1.85;
+  }
+
+  .lmlab-page-actions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 23px;
+  }
+
+  .lmlab-glass-link {
+    min-height: 46px;
+  }
+
+  .lmlab-glass-content {
+    min-height: 44px;
+  }
+
+  .lmlab-page-facts {
+    gap: 8px;
+    margin-top: 27px;
+    padding-top: 15px;
+  }
+
+  .lmlab-page-fact > span {
+    gap: 4px;
+    font-size: 9px;
+  }
+
+  .lmlab-page-fact small {
+    font-size: 8px;
   }
 
   .lmlab-page-hero-visual {
-    transform: rotate(0.6deg);
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .lmlab-page-visual-topline,
+  .lmlab-page-hero-visual figcaption {
+    font-size: 7px;
+    letter-spacing: 0.045em;
+  }
+
+  .lmlab-page-hero-visual figcaption {
+    gap: 8px;
   }
 
   .lmlab-page-section,
+  .lmlab-page-local,
   .lmlab-page-quickstart {
-    padding: 78px 0;
+    gap: 27px;
+    padding: 68px 0 73px;
   }
 
-  .lmlab-page-intro,
-  .lmlab-page-gallery,
-  .lmlab-page-workflow,
-  .lmlab-page-quickstart {
-    display: flex;
-    flex-direction: column;
-    gap: 46px;
+  .lmlab-page-section-heading h2,
+  .lmlab-page-local h2,
+  .lmlab-page-quickstart h2 {
+    font-size: clamp(39px, 9vw, 50px);
   }
 
-  .lmlab-page-feature-grid {
+  .lmlab-page-feature-grid,
+  .lmlab-page-gallery-grid {
     grid-template-columns: 1fr;
   }
 
   .lmlab-page-feature {
-    min-height: 220px;
+    min-height: 190px;
   }
 
-  .lmlab-page-gallery-grid {
-    gap: 12px;
+  .lmlab-page-task-matrix {
+    gap: 18px;
+    padding: 16px;
   }
 
-  .lmlab-page-gallery-grid figure:first-child {
-    transform: none;
+  .lmlab-page-task-tags {
+    gap: 6px;
+  }
+
+  .lmlab-page-gallery-image-wrap {
+    aspect-ratio: 1.4;
   }
 
   .lmlab-page-workflow-item {
-    grid-template-columns: 34px minmax(88px, 0.6fr) minmax(0, 1fr);
+    grid-template-columns: 27px 1px minmax(0, 1fr);
     gap: 10px;
+    padding: 14px 0;
+  }
+
+  .lmlab-page-workflow-item h3 {
+    font-size: 13px;
   }
 
   .lmlab-page-workflow-item p {
-    font-size: 11px;
+    grid-column: 3;
+    margin-top: -5px;
+    font-size: 10px;
   }
 
-  .lmlab-page-quickstart {
-    padding-bottom: 94px;
+  .lmlab-page-local {
+    gap: 25px;
+  }
+
+  .lmlab-page-settings-card {
+    min-height: 260px;
+    gap: 21px;
+    padding: 20px;
+  }
+
+  .lmlab-page-theme-options {
+    gap: 5px;
+  }
+
+  .lmlab-page-theme-options > span {
+    gap: 4px;
+    padding-inline: 7px;
+    font-size: 8px;
+  }
+
+  .lmlab-page-code-block {
+    gap: 18px;
+    padding: 19px 15px;
+  }
+
+  .lmlab-page-code-block code {
+    grid-template-columns: 18px 9px minmax(0, 1fr);
+    gap: 6px;
+    font-size: 9px;
   }
 
   .lmlab-page-footer {
     align-items: flex-start;
     flex-direction: column;
     justify-content: center;
-    gap: 14px;
-    padding: 24px 0;
+    gap: 12px;
+    padding: 19px 0 24px;
   }
 }
 
-@media (max-width: 500px) {
-  .lmlab-page-actions {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .lmlab-page-primary,
-  .lmlab-page-secondary {
-    justify-content: space-between;
-  }
-
-  .lmlab-page-gallery-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .lmlab-page-workflow-item {
-    grid-template-columns: 30px 1fr;
-  }
-
-  .lmlab-page-workflow-item p {
-    grid-column: 2;
-    margin-top: -4px;
-  }
-
-  .lmlab-page-code-block code {
-    font-size: 11px;
+@media (prefers-reduced-motion: reduce) {
+  .lmlab-page *,
+  .lmlab-page *::before,
+  .lmlab-page *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
