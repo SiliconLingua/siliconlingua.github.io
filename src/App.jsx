@@ -9,7 +9,8 @@ import ShinyText from "./components/ShinyText";
 import StarBorder from "./components/StarBorder";
 import ViewportBackground from "./components/ViewportBackground";
 import PageNavigation from "./components/PageNavigation";
-import SpotlightCard from "./components/SpotlightCard/SpotlightCard";
+import ShapeGrid from "./components/ShapeGrid/ShapeGrid";
+import LMLabPage from "./pages/LMLabPage";
 
 const AeroShards = lazy(() => import("./components/AeroShards"));
 const ColorBends = lazy(() => import("./components/ColorBends"));
@@ -21,7 +22,7 @@ const SlicedWaves = lazy(() => import("./components/SlicedWaves/SlicedWaves"));
 const WebThreads = lazy(() => import("./components/WebThreads/WebThreads"));
 
 const brandImage = `${import.meta.env.BASE_URL}bg.png`;
-const memberAccents = ["#7bdbdf", "#b9a0f1", "#eac484", "#a3d9ac", "#eda4bf"];
+const lmlabPath = `${import.meta.env.BASE_URL}lmlab`;
 
 const copy = {
   zh: {
@@ -39,6 +40,7 @@ const copy = {
       join: "加入我们",
       partners: "我们的合作伙伴",
       contact: "联系方式",
+      footer: "页脚",
     },
     labels: {
       about: "ABOUT US / 02",
@@ -83,6 +85,8 @@ const copy = {
         "开发者",
         "外部协作者",
         "外部协作者",
+        "外部协作者",
+        "外部协作者",
       ],
     },
     lmlab: {
@@ -114,7 +118,20 @@ const copy = {
       copied: "QQ群号已复制：202515095",
     },
     partners: { title: "我们的合作伙伴" },
-    footer: { brand: "硅芯智语", english: "SILICONLINGUA" },
+    footer: {
+      brand: "硅芯智语",
+      english: "SILICONLINGUA",
+      title: "一起把想法做成现实",
+      description: "我们是一个由学生组成的开源科技团队，持续探索人工智能、工程与创造力的边界。",
+      explore: "探索",
+      projects: "项目",
+      community: "社区",
+      contact: "联系方式",
+      contactValue: "QQ群 202515095",
+      invite: "加入我们的下一次实验",
+      backToTop: "返回顶部",
+      copyright: "保留所有权利",
+    },
     controls: { menu: "主导航", open: "打开菜单", close: "关闭菜单" },
   },
   en: {
@@ -132,6 +149,7 @@ const copy = {
       join: "Join Us",
       partners: "Partners",
       contact: "Contact",
+      footer: "Footer",
     },
     labels: {
       about: "ABOUT US / 02",
@@ -208,27 +226,42 @@ const copy = {
       copied: "QQ group copied · 202515095",
     },
     partners: { title: "Our Partners" },
-    footer: { brand: "SiliconLingua", english: "SILICONLINGUA" },
+    footer: {
+      brand: "SiliconLingua",
+      english: "SILICONLINGUA",
+      title: "Turn ideas into something real",
+      description: "A student-led open-source technology team exploring the edge of AI, engineering and creative work.",
+      explore: "Explore",
+      projects: "Projects",
+      community: "Community",
+      contact: "Contact",
+      contactValue: "QQ Group · 202515095",
+      invite: "Join our next experiment",
+      backToTop: "Back to top",
+      copyright: "All rights reserved",
+    },
     controls: { menu: "Main navigation", open: "Open menu", close: "Close menu" },
   },
 };
 
 const members = [
-  ["码宇（Nathan）", "nathan"],
-  ["人朝的小郭同学", "guo"],
-  ["希", "xi"],
-  ["METQL", "metql"],
-  ["EcoSpace", "ecospace"],
-  ["龙雀awa", "longqueawa"],
-  ["Amia", "amia"],
-  ["Liziyu352_", "liziyu352"],
-  ["狗修金的乖狐狸", "gouxiu"],
-  ["Qi", "qi"],
-  ["Tydecent", "tydecent"],
-  ["介子气实验室", "jieziqi"],
-  ["Patrick 2026", "patrick2026"],
-  ["批扎狗", "pizhagou"],
-  ["EMPET", "empet"],
+  { name: "人朝的小郭同学", handle: "guo", qq: "1559689519", role: "核心开发者", roleEn: "Core developer" },
+  { name: "STLNathan", handle: "stlnathan", qq: "3112745008", role: "【总工】STL_Natha", roleEn: "Chief engineer · STL_Natha" },
+  { name: "小严awa", handle: "xiaoyanawa", qq: "3585302907", role: "核心开发者", roleEn: "Core developer" },
+  { name: "批扎狗", handle: "pizhagou", qq: "3565637168", role: "开发者", roleEn: "Developer" },
+  { name: "Tydecent", handle: "tydecent", qq: "3599150358", role: "开发者", roleEn: "Developer" },
+  { name: "Qi", handle: "qi", qq: "3949455390", role: "开发者", roleEn: "Developer" },
+  { name: "龙雀awa", handle: "longqueawa", qq: "3960080816", role: "开发者", roleEn: "Developer" },
+  { name: "狗修金的乖狐狸", handle: "gouxiu", qq: "3361390582", role: "开发者", roleEn: "Developer" },
+  { name: "DevNathan", handle: "devnathan", qq: "2644019891", role: "【总防】METQL", roleEn: "Defense lead · METQL" },
+  { name: "EcoSpace", handle: "ecospace", qq: "1984922167", role: "【总攻】EcoSpace", roleEn: "Attack lead · EcoSpace" },
+  { name: "希", handle: "xi", qq: "3678186568", role: "多智能体协同首", roleEn: "Multi-agent collaboration" },
+  { name: "芥子气实验室", handle: "jieziqi", qq: "3383960942", role: "开发者", roleEn: "Developer" },
+  { name: "MC-WIN", handle: "mcwin", qq: "3639506878", role: "开发者", roleEn: "Developer" },
+  { name: "『Amia』⁧~喵⁧", handle: "amia", qq: "904228000", role: "开发者", roleEn: "Developer" },
+  { name: "Liziyu352_", handle: "liziyu352", qq: "3158941721", role: "[萨博一]Liziyu352_", roleEn: "[Sabotage] Liziyu352_" },
+  { name: "EMPET", handle: "empet", qq: "692148287", role: "开发者", roleEn: "Developer" },
+  { name: "Patrick 2026", handle: "patrick2026", qq: "3821661994", role: "开发者", roleEn: "Developer" },
 ];
 
 const partners = [
@@ -247,6 +280,7 @@ const pageIds = [
   "in-progress",
   "join-us",
   "partners",
+  "footer",
 ];
 
 function SectionLabel({ children }) {
@@ -319,7 +353,9 @@ function App() {
                       ? t.nav.progress
                       : id === "join-us"
                         ? t.nav.join
-                        : t.nav.partners,
+                        : id === "partners"
+                          ? t.nav.partners
+                          : t.nav.footer,
         index,
       })),
     [t],
@@ -372,6 +408,37 @@ function App() {
     },
   ], [t]);
 
+  const footerColumns = useMemo(() => [
+    {
+      title: t.footer.explore,
+      links: [
+        { label: t.nav.home, href: "#top" },
+        { label: t.nav.about, href: "#team" },
+        { label: t.nav.members, href: "#members" },
+      ],
+    },
+    {
+      title: t.footer.projects,
+      links: [
+        { label: t.nav.model, href: "#llm" },
+        { label: t.nav.lmlab, href: "#lmlab" },
+        { label: t.nav.progress, href: "#in-progress" },
+      ],
+    },
+    {
+      title: t.footer.community,
+      links: [
+        { label: t.nav.join, href: "#join-us" },
+        { label: t.nav.partners, href: "#partners" },
+        { label: t.footer.contact, href: "#join-us" },
+      ],
+    },
+  ], [t]);
+
+  if (typeof window !== "undefined" && window.location.pathname.replace(/\/+$/, "").endsWith("/lmlab")) {
+    return <LMLabPage />;
+  }
+
   return (
     <main className="landing-page">
       <CardNav
@@ -381,6 +448,7 @@ function App() {
         language={language}
         onLanguageChange={setLanguage}
         logoAlt={t.footer.brand}
+        logoSrc={brandImage}
         labels={t.controls}
       />
 
@@ -544,26 +612,36 @@ function App() {
             <h2 id="members-title">{t.members.title}</h2>
             <p>{t.members.subtitle}</p>
           </div>
-          <ul className="members-grid">
-            {members.map(([name, handle], index) => (
-              <li key={handle} style={{ "--member-accent": memberAccents[index % memberAccents.length] }}>
-                <SpotlightCard className="member-card">
-                  <div className="member-row">
-                    <div className="member-avatar" aria-hidden="true">
-                      <img src={brandImage} alt="" loading="lazy" />
-                      <span>{name.slice(0, 1)}</span>
-                    </div>
-                    <div className="member-info">
-                      <h3>{name}</h3>
-                      <p>{t.members.roles[index]}</p>
-                    </div>
-                  </div>
-                </SpotlightCard>
+          <ul className="members-list" aria-label={t.members.title}>
+            {members.map((member, index) => (
+              <li
+                className="member-list-row"
+                key={member.handle}
+                style={{
+                  "--row-index": index,
+                  "--landscape-row-index": Math.floor(index / 2),
+                }}
+              >
+                <span className="member-list-avatar-wrap">
+                  <img
+                    className="member-list-avatar"
+                    src={`https://q1.qlogo.cn/g?b=qq&nk=${member.qq}&s=0`}
+                    alt=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    onError={(event) => {
+                      event.currentTarget.style.visibility = "hidden";
+                    }}
+                  />
+                  <span className="member-list-initial" aria-hidden="true">{member.name.slice(0, 1)}</span>
+                </span>
+                <div className="member-list-name">{member.name}</div>
+                <div className="member-list-role">{t.members.roles[index]}</div>
               </li>
             ))}
           </ul>
-        </AnimatedContent>
-      </section>
+         </AnimatedContent>
+       </section>
 
       <section className="lmlab-section page-section" id="lmlab" aria-labelledby="lmlab-title">
         <ViewportBackground
@@ -600,11 +678,15 @@ function App() {
             <p className="lmlab-kicker">{t.lmlab.english}</p>
             <h2 id="lmlab-title">{t.lmlab.title}</h2>
             <p className="lmlab-description">{t.lmlab.description}</p>
-            <div className="lmlab-actions" aria-label={t.lmlab.title}>
-              {t.lmlab.buttons.map((label) => (
-                <ActionButton key={label}>{label}</ActionButton>
-              ))}
-            </div>
+             <div className="lmlab-actions" aria-label={t.lmlab.title}>
+               {t.lmlab.buttons.map((label, index) => (
+                 index === t.lmlab.buttons.length - 1 ? (
+                   <ActionButton key={label} as="a" href={lmlabPath}>{label}</ActionButton>
+                 ) : (
+                   <ActionButton key={label}>{label}</ActionButton>
+                 )
+               ))}
+             </div>
           </div>
           <div className="lmlab-visual">
             <CardSwap
@@ -791,13 +873,61 @@ function App() {
         </AnimatedContent>
       </section>
 
-      <footer className="site-footer">
-        <div className="footer-brand">
-          <span className="footer-mark" aria-hidden="true"><i /><i /><i /></span>
-          <span>{t.footer.brand}</span>
+      <footer className="site-footer page-section" id="footer" aria-labelledby="footer-title">
+        <ViewportBackground
+          className="footer-shape-grid"
+          component={ShapeGrid}
+          direction="diagonal"
+          speed={0.24}
+          borderColor="rgba(174, 215, 224, 0.18)"
+          squareSize={46}
+          hoverFillColor="rgba(185, 244, 249, 0.2)"
+          shape="square"
+          hoverTrailAmount={7}
+        />
+        <div className="footer-grid-wash" aria-hidden="true" />
+        <div className="footer-inner section-content">
+          <div className="footer-main">
+            <div className="footer-brand-block">
+              <img className="footer-logo" src={brandImage} alt={t.about.imageAlt} />
+              <h2 id="footer-title">{t.footer.title}</h2>
+              <p className="footer-description">{t.footer.description}</p>
+              <a className="footer-cta" href="#join-us">
+                <span>{t.footer.invite}</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+            <div className="footer-links" aria-label={t.footer.explore}>
+              {footerColumns.map((column) => (
+                <div className="footer-link-group" key={column.title}>
+                  <h3>{column.title}</h3>
+                  <ul>
+                    {column.links.map((link) => (
+                      <li key={link.href + link.label}><a href={link.href}>{link.label}</a></li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <div className="footer-contact">
+              <span className="footer-kicker">{t.footer.contact}</span>
+              <a href="#join-us">{t.footer.contactValue}</a>
+              <span>{t.footer.english}</span>
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <div className="footer-brand">
+              <span>{t.footer.brand}</span>
+              <span className="footer-divider" aria-hidden="true">/</span>
+              <span className="footer-wordmark">{t.footer.english}</span>
+            </div>
+            <span>© 2026 {t.footer.copyright}</span>
+            <a className="footer-top-link" href="#top">
+              {t.footer.backToTop}
+              <span aria-hidden="true">↑</span>
+            </a>
+          </div>
         </div>
-        <span className="footer-center">{t.footer.english}</span>
-        <span className="footer-year">© 2026</span>
       </footer>
     </main>
   );

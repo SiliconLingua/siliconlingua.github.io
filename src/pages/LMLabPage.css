@@ -1,0 +1,661 @@
+html.lmlab-route {
+  scroll-snap-type: none;
+}
+
+.lmlab-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow: hidden;
+  color: #edf8f7;
+  background: #080c0d;
+}
+
+.lmlab-page::before,
+.lmlab-page::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.lmlab-page::before {
+  z-index: -1;
+  background:
+    radial-gradient(circle at 74% 7%, rgba(116, 219, 225, 0.14), transparent 24%),
+    radial-gradient(circle at 14% 45%, rgba(74, 96, 196, 0.1), transparent 28%),
+    linear-gradient(130deg, #080c0d 0%, #0a1113 52%, #0a0d16 100%);
+}
+
+.lmlab-page::after {
+  z-index: 0;
+  opacity: 0.24;
+  background-image: radial-gradient(rgba(231, 255, 255, 0.55) 0.5px, transparent 0.7px);
+  background-size: 5px 5px;
+  mix-blend-mode: overlay;
+}
+
+.lmlab-page-grid {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+.lmlab-page-grid .shapegrid-canvas {
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.lmlab-page-veil {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 12, 13, 0.18), rgba(8, 12, 13, 0.78) 86%);
+  pointer-events: none;
+}
+
+.lmlab-page-header,
+.lmlab-page-hero,
+.lmlab-page-section,
+.lmlab-page-quickstart,
+.lmlab-page-footer {
+  position: relative;
+  z-index: 1;
+  width: min(1240px, calc(100% - 80px));
+  margin: 0 auto;
+}
+
+.lmlab-page-header {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid rgba(221, 252, 250, 0.14);
+  color: rgba(226, 247, 245, 0.68);
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.lmlab-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #efffff;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+.lmlab-wordmark-mark {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border: 1px solid rgba(190, 243, 243, 0.52);
+  border-radius: 50%;
+  color: #b9f4f1;
+  font-size: 8px;
+  letter-spacing: 0;
+}
+
+.lmlab-header-status {
+  color: rgba(183, 234, 234, 0.45);
+}
+
+.lmlab-page-nav {
+  display: flex;
+  gap: 28px;
+  margin-left: auto;
+}
+
+.lmlab-page-nav a,
+.lmlab-back-link {
+  color: inherit;
+  transition: color 180ms ease;
+}
+
+.lmlab-page-nav a:hover,
+.lmlab-back-link:hover {
+  color: #c9fffb;
+}
+
+.lmlab-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(228, 250, 247, 0.84);
+  white-space: nowrap;
+}
+
+.lmlab-page-hero {
+  display: grid;
+  min-height: 710px;
+  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+  align-items: center;
+  gap: clamp(48px, 7vw, 110px);
+  padding: 78px 0 108px;
+}
+
+.lmlab-page-hero-copy {
+  max-width: 570px;
+}
+
+.lmlab-page-eyebrow {
+  margin: 0 0 24px;
+  color: rgba(180, 235, 235, 0.56);
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  line-height: 1.5;
+}
+
+.lmlab-page-hero h1,
+.lmlab-page-section-heading h2,
+.lmlab-page-quickstart h2 {
+  margin: 0;
+  color: #f3ffff;
+  font-family: Inter, "Noto Sans SC", sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.075em;
+  line-height: 0.96;
+}
+
+.lmlab-page-hero h1 {
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(66px, 8vw, 126px);
+}
+
+.lmlab-page-hero h1 em,
+.lmlab-page-section-heading h2 em,
+.lmlab-page-quickstart h2 em {
+  color: #a9e9e7;
+  font-family: "Noto Sans SC", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -0.055em;
+}
+
+.lmlab-page-lede {
+  max-width: 510px;
+  margin: 36px 0 0;
+  color: rgba(224, 246, 244, 0.68);
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.lmlab-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-top: 38px;
+}
+
+.lmlab-page-primary,
+.lmlab-page-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid rgba(183, 244, 240, 0.4);
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.lmlab-page-primary {
+  color: #071112;
+  background: #b9f1ed;
+}
+
+.lmlab-page-secondary {
+  border-color: rgba(225, 252, 250, 0.2);
+  color: rgba(237, 255, 252, 0.74);
+}
+
+.lmlab-page-primary:hover,
+.lmlab-page-secondary:hover {
+  border-color: #d6fffb;
+  transform: translateY(-2px);
+}
+
+.lmlab-page-primary:hover {
+  background: #e0fffb;
+}
+
+.lmlab-page-secondary:hover {
+  background: rgba(195, 250, 246, 0.08);
+}
+
+.lmlab-page-hero-visual {
+  position: relative;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid rgba(190, 244, 240, 0.2);
+  background: rgba(7, 20, 21, 0.44);
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transform: rotate(1.5deg);
+}
+
+.lmlab-page-visual-topline,
+.lmlab-page-hero-visual figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: rgba(191, 237, 234, 0.5);
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+}
+
+.lmlab-page-visual-topline {
+  min-height: 28px;
+  padding: 0 4px 10px;
+}
+
+.lmlab-page-hero-image-wrap {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(215, 255, 251, 0.16);
+  background: #11191a;
+}
+
+.lmlab-page-hero-image-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0.94;
+  filter: saturate(0.9) contrast(1.02);
+}
+
+.lmlab-page-image-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(176, 255, 248, 0.08), transparent 32%, rgba(112, 132, 255, 0.08));
+  pointer-events: none;
+}
+
+.lmlab-page-hero-visual figcaption {
+  min-height: 36px;
+  padding: 10px 4px 0;
+}
+
+.lmlab-page-section {
+  padding: 110px 0;
+  border-top: 1px solid rgba(216, 251, 247, 0.13);
+}
+
+.lmlab-page-intro {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(48px, 8vw, 140px);
+}
+
+.lmlab-page-section-heading h2,
+.lmlab-page-quickstart h2 {
+  font-size: clamp(46px, 5.2vw, 78px);
+}
+
+.lmlab-page-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.lmlab-page-feature {
+  position: relative;
+  display: flex;
+  min-height: 286px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border-top: 1px solid rgba(216, 251, 247, 0.4);
+  background: linear-gradient(145deg, rgba(171, 244, 237, 0.07), rgba(8, 14, 17, 0.18) 50%);
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.lmlab-page-feature:hover {
+  background: linear-gradient(145deg, rgba(171, 244, 237, 0.14), rgba(8, 14, 17, 0.24) 50%);
+  transform: translateY(-5px);
+}
+
+.lmlab-page-feature-number {
+  color: #a7e8e5;
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+}
+
+.lmlab-page-feature p {
+  margin: 0 0 13px;
+  color: rgba(176, 233, 230, 0.48);
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+}
+
+.lmlab-page-feature h3 {
+  margin: 0;
+  color: #f0fffc;
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.lmlab-page-feature div > span {
+  display: block;
+  margin-top: 16px;
+  color: rgba(222, 246, 242, 0.58);
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.lmlab-page-feature-arrow {
+  align-self: flex-end;
+  color: rgba(185, 242, 237, 0.66);
+  font-size: 18px;
+}
+
+.lmlab-page-gallery {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(48px, 8vw, 140px);
+  align-items: start;
+}
+
+.lmlab-page-gallery-heading > p:last-child {
+  max-width: 310px;
+  margin: 28px 0 0;
+  color: rgba(220, 245, 241, 0.56);
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.lmlab-page-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.lmlab-page-gallery-grid figure {
+  margin: 0;
+}
+
+.lmlab-page-gallery-grid figure:first-child {
+  transform: translateY(56px);
+}
+
+.lmlab-page-gallery-grid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.28;
+  object-fit: cover;
+  border: 1px solid rgba(214, 253, 248, 0.18);
+  background: #12191b;
+}
+
+.lmlab-page-gallery-grid figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px 2px 0;
+}
+
+.lmlab-page-gallery-grid figcaption span {
+  color: rgba(172, 228, 225, 0.5);
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.lmlab-page-gallery-grid figcaption strong {
+  color: rgba(237, 255, 252, 0.82);
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.lmlab-page-workflow {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(48px, 8vw, 140px);
+}
+
+.lmlab-page-workflow-list {
+  border-top: 1px solid rgba(213, 250, 245, 0.18);
+}
+
+.lmlab-page-workflow-item {
+  display: grid;
+  grid-template-columns: 48px minmax(120px, 0.5fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: baseline;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(213, 250, 245, 0.13);
+}
+
+.lmlab-page-workflow-item > span {
+  color: #a7e8e5;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+}
+
+.lmlab-page-workflow-item h3 {
+  margin: 0;
+  color: rgba(238, 255, 252, 0.88);
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.lmlab-page-workflow-item p {
+  margin: 0;
+  color: rgba(218, 242, 238, 0.52);
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.lmlab-page-quickstart {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+  gap: clamp(48px, 10vw, 180px);
+  align-items: end;
+  padding: 120px 0 150px;
+  border-top: 1px solid rgba(216, 251, 247, 0.13);
+}
+
+.lmlab-page-quickstart > div:first-child > p:last-child {
+  max-width: 470px;
+  margin: 28px 0 0;
+  color: rgba(220, 245, 241, 0.58);
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.lmlab-page-code-block {
+  display: flex;
+  min-height: 176px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 13px;
+  padding: 24px;
+  border: 1px solid rgba(180, 240, 236, 0.2);
+  background: rgba(4, 12, 14, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.lmlab-page-code-label,
+.lmlab-page-code-note {
+  color: rgba(171, 229, 225, 0.5);
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+}
+
+.lmlab-page-code-block code {
+  color: #dbfffa;
+  font-family: "DM Mono", monospace;
+  font-size: 13px;
+}
+
+.lmlab-page-code-block code i {
+  margin-right: 9px;
+  color: #a7e8e5;
+  font-style: normal;
+}
+
+.lmlab-page-code-note {
+  margin-top: 6px;
+  color: rgba(171, 229, 225, 0.36);
+  letter-spacing: 0.08em;
+}
+
+.lmlab-page-footer {
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid rgba(216, 251, 247, 0.13);
+  color: rgba(193, 232, 229, 0.46);
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 820px) {
+  .lmlab-page-header,
+  .lmlab-page-hero,
+  .lmlab-page-section,
+  .lmlab-page-quickstart,
+  .lmlab-page-footer {
+    width: calc(100% - 36px);
+  }
+
+  .lmlab-page-header {
+    min-height: 64px;
+  }
+
+  .lmlab-header-status,
+  .lmlab-page-nav {
+    display: none;
+  }
+
+  .lmlab-page-hero {
+    display: flex;
+    min-height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 56px;
+    padding: 86px 0 100px;
+  }
+
+  .lmlab-page-hero h1 {
+    font-size: clamp(60px, 17vw, 104px);
+  }
+
+  .lmlab-page-lede {
+    margin-top: 28px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .lmlab-page-hero-visual {
+    transform: rotate(0.6deg);
+  }
+
+  .lmlab-page-section,
+  .lmlab-page-quickstart {
+    padding: 78px 0;
+  }
+
+  .lmlab-page-intro,
+  .lmlab-page-gallery,
+  .lmlab-page-workflow,
+  .lmlab-page-quickstart {
+    display: flex;
+    flex-direction: column;
+    gap: 46px;
+  }
+
+  .lmlab-page-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lmlab-page-feature {
+    min-height: 220px;
+  }
+
+  .lmlab-page-gallery-grid {
+    gap: 12px;
+  }
+
+  .lmlab-page-gallery-grid figure:first-child {
+    transform: none;
+  }
+
+  .lmlab-page-workflow-item {
+    grid-template-columns: 34px minmax(88px, 0.6fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .lmlab-page-workflow-item p {
+    font-size: 11px;
+  }
+
+  .lmlab-page-quickstart {
+    padding-bottom: 94px;
+  }
+
+  .lmlab-page-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    padding: 24px 0;
+  }
+}
+
+@media (max-width: 500px) {
+  .lmlab-page-actions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .lmlab-page-primary,
+  .lmlab-page-secondary {
+    justify-content: space-between;
+  }
+
+  .lmlab-page-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lmlab-page-workflow-item {
+    grid-template-columns: 30px 1fr;
+  }
+
+  .lmlab-page-workflow-item p {
+    grid-column: 2;
+    margin-top: -4px;
+  }
+
+  .lmlab-page-code-block code {
+    font-size: 11px;
+  }
+}

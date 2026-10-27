@@ -7,6 +7,7 @@ import "./CardNav.css";
 
 const CardNav = ({
   logoAlt = "Logo",
+  logoSrc,
   items,
   className = "",
   ease = "power3.out",
@@ -15,7 +16,7 @@ const CardNav = ({
   onLanguageChange,
   labels = {},
 }) => {
-  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const navRef = useRef(null);
   const contentRef = useRef(null);
@@ -116,14 +117,14 @@ const CardNav = ({
 
     if (!expandedRef.current) {
       expandedRef.current = true;
-      setIsHamburgerOpen(true);
+      setIsMenuOpen(true);
       setIsExpanded(true);
       timeline.play(0);
       return;
     }
 
     expandedRef.current = false;
-    setIsHamburgerOpen(false);
+    setIsMenuOpen(false);
     timeline.eventCallback("onReverseComplete", () => {
       if (!expandedRef.current) setIsExpanded(false);
     });
@@ -139,7 +140,7 @@ const CardNav = ({
     const closeOnEscape = (event) => {
       if (event.key !== "Escape") return;
       toggleMenu();
-      navRef.current?.querySelector(".hamburger-menu")?.focus();
+      navRef.current?.querySelector(".menu-trigger")?.focus();
     };
 
     document.addEventListener("pointerdown", closeOnOutsidePointer, true);
@@ -176,20 +177,22 @@ const CardNav = ({
         <div className="card-nav-top">
           <button
             type="button"
-            className={`hamburger-menu ${isHamburgerOpen ? "open" : ""}`}
+            className={`menu-trigger ${isMenuOpen ? "open" : ""}`}
             onClick={toggleMenu}
             aria-label={isExpanded ? labels.close || "关闭菜单" : labels.open || "打开菜单"}
             aria-expanded={isExpanded}
             aria-controls="card-nav-content"
             style={{ color: menuColor }}
-          >
-            <span className="hamburger-line" />
-            <span className="hamburger-line" />
-          </button>
+           >
+             <span className="menu-icon" aria-hidden="true">
+               <span />
+               <span />
+               <span />
+             </span>
+           </button>
 
           <a className="logo-container" href="#top" aria-label={logoAlt}>
-            <span className="logo-mark" aria-hidden="true"><i /><i /><i /></span>
-            <span className="logo-text">{logoAlt}</span>
+            {logoSrc ? <img className="logo-image" src={logoSrc} alt={logoAlt} /> : <span className="logo-text">{logoAlt}</span>}
           </a>
 
           <div className="card-nav-controls" aria-label="语言 / Language">
@@ -239,42 +242,25 @@ const CardNav = ({
                 mixBlendMode="screen"
                 enabled={isExpanded}
               >
-                <GlassSurface
-                  className="nav-card-glass-inner"
-                  width="100%"
-                  height="100%"
-                  borderRadius={7}
-                  borderWidth={0.06}
-                  brightness={68}
-                  opacity={0.9}
-                  blur={8}
-                  displace={0.06}
-                  backgroundOpacity={0.1}
-                  saturation={1.15}
-                  distortionScale={-20}
-                  mixBlendMode="screen"
-                  enabled={isExpanded}
-                >
-                  <div className="nav-card-body" style={{ color: item.textColor || "#fff" }}>
-                    <div className="nav-card-label">{item.label}</div>
-                    <div className="nav-card-links">
-                      {item.links?.map((link, linkIndex) => (
-                        <a
-                          key={`${link.label}-${linkIndex}`}
-                          className="nav-card-link"
-                          href={link.href}
-                          aria-label={link.ariaLabel}
-                          onClick={() => {
-                            if (expandedRef.current) toggleMenu();
-                          }}
-                        >
-                          <span className="nav-card-link-icon" aria-hidden="true">{link.icon || "↗"}</span>
-                          {link.label}
-                        </a>
-                      ))}
-                    </div>
+                <div className="nav-card-body" style={{ color: item.textColor || "#fff" }}>
+                  <div className="nav-card-label">{item.label}</div>
+                  <div className="nav-card-links">
+                    {item.links?.map((link, linkIndex) => (
+                      <a
+                        key={`${link.label}-${linkIndex}`}
+                        className="nav-card-link"
+                        href={link.href}
+                        aria-label={link.ariaLabel}
+                        onClick={() => {
+                          if (expandedRef.current) toggleMenu();
+                        }}
+                      >
+                        <span className="nav-card-link-icon" aria-hidden="true">{link.icon || "↗"}</span>
+                        {link.label}
+                      </a>
+                    ))}
                   </div>
-                </GlassSurface>
+                </div>
               </GlassSurface>
             </div>
           ))}
