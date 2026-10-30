@@ -10,6 +10,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,11 +29,20 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Run regression tests
+        run: node --test tests/*.test.js
 
       - name: Build homepage and LMLab static entries
         run: npm run build
+
+      - name: Verify compiled Pages artifact
+        run: node scripts/verify-build.mjs
 
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
