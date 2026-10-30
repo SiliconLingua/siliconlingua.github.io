@@ -10,6 +10,7 @@
 }
 
 .card-nav {
+  --nav-safe-bottom: env(safe-area-inset-bottom, 0px);
   display: block;
   height: 60px;
   padding: 0;
@@ -116,7 +117,7 @@
 .card-nav-controls {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 0;
   height: 100%;
   color: rgba(255, 255, 255, 0.62);
   font-family: "DM Mono", monospace;
@@ -125,6 +126,8 @@
 }
 
 .nav-setting {
+  min-width: 44px;
+  min-height: 44px;
   border: 0;
   padding: 0;
   color: inherit;
@@ -149,6 +152,9 @@
   display: flex;
   align-items: flex-end;
   gap: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   visibility: hidden;
   pointer-events: none;
   z-index: 1;
@@ -226,12 +232,10 @@
 }
 
 .nav-card-link-icon {
-  display: inline-flex;
+  display: block;
+  flex: 0 0 16px;
   width: 16px;
-  justify-content: center;
-  font-family: Inter, sans-serif;
-  font-size: 18px;
-  line-height: 1;
+  height: 16px;
 }
 
 .nav-card-link:hover { opacity: 0.75; }
@@ -245,11 +249,11 @@
 }
 
 @media (max-width: 768px) {
-  .card-nav-container { width: calc(100% - 32px); top: 16px; }
+  .card-nav-container { width: calc(100% - 32px); top: max(16px, env(safe-area-inset-top)); }
   .card-nav-top { padding: 0.5rem 0.75rem; justify-content: space-between; }
    .menu-trigger { order: 1; }
   .logo-container { order: 2; }
-  .card-nav-controls { order: 3; gap: 4px; font-size: 10px; }
+  .card-nav-controls { order: 3; gap: 0; font-size: 10px; }
   .card-nav-content {
     position: absolute;
     top: 60px;
@@ -261,15 +265,28 @@
     justify-content: flex-start;
     overflow-y: auto;
   }
-  .nav-card { height: auto; min-height: 60px; flex: 1 1 auto; max-height: none; }
+  .nav-card { height: auto; min-height: 60px; flex: 0 0 auto; max-height: none; }
+  .nav-card-glass { height: auto !important; }
+  .nav-card-body { height: auto; padding: 12px 16px; gap: 6px; }
+  .nav-card-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 12px; }
   .nav-card-body { min-height: 60px; }
   .nav-card-label { font-size: 18px; }
-  .nav-card-link { font-size: 15px; }
-   .logo-image { width: 142px; height: 42px; }
+  .nav-card-link { min-width: 0; min-height: 44px; font-size: 14px; overflow-wrap: anywhere; }
+  .logo-container { min-width: 0; }
+   .logo-image { width: clamp(112px, 32vw, 142px); max-width: 100%; height: 42px; }
 }
 
 @media (max-width: 380px) {
   .nav-card-body { padding: 12px 10px; }
   .nav-card-label { font-size: 17px; }
-  .card-nav-controls { gap: 4px; }
+  .card-nav-controls { gap: 0; }
+}
+
+/* Keep the two GlassSurface layers, but avoid refracted duplicate text on touch screens. */
+@media (max-width: 1200px), (pointer: coarse) {
+  .card-nav-glass.glass-surface--svg,
+  .nav-card-glass.glass-surface--svg {
+    backdrop-filter: blur(18px) saturate(1.25) brightness(1.08);
+    -webkit-backdrop-filter: blur(18px) saturate(1.25) brightness(1.08);
+  }
 }

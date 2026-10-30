@@ -238,7 +238,7 @@ html.lmlab-route body {
   z-index: 0;
   width: max-content !important;
   height: auto !important;
-  opacity: 0.54;
+  opacity: 1;
 }
 
 .lmlab-glass-surface::after {
@@ -1055,9 +1055,9 @@ html.lmlab-route body {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .lmlab-site-nav {
-    top: 15px;
+    top: max(16px, env(safe-area-inset-top));
     width: calc(100% - 32px);
   }
 
@@ -1105,7 +1105,7 @@ html.lmlab-route body {
   }
 
   .lmlab-page-hero-visual {
-    transform: rotate(0.25deg);
+    transform: none;
   }
 
   .lmlab-page-section,
@@ -1158,6 +1158,12 @@ html.lmlab-route body {
     gap: 30px;
     padding-bottom: 84px;
   }
+
+  .lmlab-page-hero-visual::before, .lmlab-page-visual-orbit { display: none; }
+  .lmlab-page-hero-copy, .lmlab-page-section-heading, .lmlab-page-local-copy, .lmlab-page-quickstart-copy { min-width: 0; }
+  .lmlab-page-fact, .lmlab-page-footer { overflow-wrap: anywhere; }
+  .lmlab-page-visual-topline, .lmlab-page-hero-visual figcaption { flex-wrap: wrap; }
+  .lmlab-page-section-heading h2, .lmlab-page-local h2, .lmlab-page-quickstart h2 { overflow-wrap: anywhere; }
 }
 
 @media (max-width: 540px) {
@@ -1181,8 +1187,9 @@ html.lmlab-route body {
   }
 
   .lmlab-page-hero h1 {
-    font-size: clamp(42px, 9.4vw, 52px);
+    font-size: clamp(36px, 9.4vw, 50px);
     letter-spacing: -0.065em;
+    text-wrap: balance;
   }
 
   .lmlab-page-lede {
@@ -1200,10 +1207,15 @@ html.lmlab-route body {
 
   .lmlab-glass-link {
     min-height: 46px;
+    max-width: 100%;
   }
+  .lmlab-glass-surface, .lmlab-glass-surface > .glass-surface__content { width: 100% !important; }
 
   .lmlab-glass-content {
     min-height: 44px;
+    width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .lmlab-page-facts {
@@ -1214,11 +1226,11 @@ html.lmlab-route body {
 
   .lmlab-page-fact > span {
     gap: 4px;
-    font-size: 9px;
+    font-size: 11px;
   }
 
   .lmlab-page-fact small {
-    font-size: 8px;
+    font-size: 10px;
   }
 
   .lmlab-page-hero-visual {

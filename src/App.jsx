@@ -1,5 +1,5 @@
 import { lazy, useEffect, useMemo, useRef, useState } from "react";
-import { BookOpen, Check, Copy, Hand } from "lucide-react";
+import { ArrowUp, ArrowUpRight, BookOpen, Check, Copy, Hand } from "lucide-react";
 import BlurText from "./components/BlurText/BlurText";
 import CardNav from "./components/CardNav/CardNav";
 import CardSwap from "./components/CardSwap";
@@ -22,7 +22,7 @@ const SlicedWaves = lazy(() => import("./components/SlicedWaves/SlicedWaves"));
 const WebThreads = lazy(() => import("./components/WebThreads/WebThreads"));
 
 const brandImage = `${import.meta.env.BASE_URL}bg.png`;
-const lmlabPath = `${import.meta.env.BASE_URL}lmlab`;
+const lmlabPath = `${import.meta.env.BASE_URL}lmlab/`;
 
 const copy = {
   zh: {
@@ -267,10 +267,10 @@ const members = [
 ];
 
 const partners = [
-  { name: "XINGJI Studio", logo: `${import.meta.env.BASE_URL}1.png` },
-  { name: "HGSpace Studio", logo: `${import.meta.env.BASE_URL}2.png` },
-  { name: "537 工作室", logo: `${import.meta.env.BASE_URL}3.png` },
-  { name: "AuronaLabs", logo: `${import.meta.env.BASE_URL}4.png` },
+  { name: "XINGJI Studio", logo: `${import.meta.env.BASE_URL}1.png`, href: "https://xingjisoft.com" },
+  { name: "HGSpace Studio", logo: `${import.meta.env.BASE_URL}2.png`, href: "https://www.hgspace.work/" },
+  { name: "537 工作室", logo: `${import.meta.env.BASE_URL}3.png`, href: "https://www.ithink537.top/" },
+  { name: "AuronaLabs", logo: `${import.meta.env.BASE_URL}4.png`, href: "https://github.com/AuronaLabs" },
 ];
 
 const pageIds = [
@@ -364,6 +364,7 @@ function App() {
   );
 
   useEffect(() => () => window.clearTimeout(copyTimer.current), []);
+  useEffect(() => { document.documentElement.lang = language === "zh" ? "zh-CN" : "en"; }, [language]);
 
   const copyQQ = async () => {
     try {
@@ -380,7 +381,7 @@ function App() {
     {
       label: t.nav.studio,
       textColor: "#fff",
-      links: [{ label: t.nav.studio, icon: "✦", href: "#top", ariaLabel: t.nav.studio }],
+      links: [{ label: t.nav.studio, href: "https://xingjisoft.com", ariaLabel: t.nav.studio }],
     },
     {
       label: t.nav.about,
@@ -437,7 +438,7 @@ function App() {
     },
   ], [t]);
 
-  if (typeof window !== "undefined" && window.location.pathname.replace(/\/+$/, "").endsWith("/lmlab")) {
+  if (typeof window !== "undefined" && /\/lmlab(?:\/index\.html)?\/?$/.test(window.location.pathname)) {
     return <LMLabPage language={language} onLanguageChange={setLanguage} />;
   }
 
@@ -619,6 +620,7 @@ function App() {
               <li
                 className="member-list-row"
                 key={member.handle}
+                title={`${member.name} · ${t.members.roles[index]}`}
                 style={{
                   "--row-index": index,
                   "--landscape-row-index": index < 9 ? index : index - 9,
@@ -861,12 +863,14 @@ function App() {
             {partners.map((partner, index) => (
               <article className="partner-card" key={partner.name}>
                 <div className="partner-card-content">
+                  <a className="partner-card-link" href={partner.href} target="_blank" rel="noopener noreferrer" aria-label={partner.name} />
                   <div className="partner-logo-frame">
                     <img className="partner-logo" src={partner.logo} alt={`${partner.name} Logo`} loading="lazy" decoding="async" />
                   </div>
                   <div className="partner-meta">
                     <span className="partner-number">0{index + 1}</span>
                     <h3>{partner.name}</h3>
+                    {partner.href && <ArrowUpRight className="partner-external-icon" size={16} aria-hidden="true" />}
                   </div>
                 </div>
               </article>
@@ -896,7 +900,7 @@ function App() {
               <p className="footer-description">{t.footer.description}</p>
               <a className="footer-cta" href="#join-us">
                 <span>{t.footer.invite}</span>
-                <span aria-hidden="true">↗</span>
+                <ArrowUpRight size={18} aria-hidden="true" />
               </a>
             </div>
             <div className="footer-links" aria-label={t.footer.explore}>
@@ -926,7 +930,7 @@ function App() {
             <span>© 2026 {t.footer.copyright}</span>
             <a className="footer-top-link" href="#top">
               {t.footer.backToTop}
-              <span aria-hidden="true">↑</span>
+              <ArrowUp size={16} aria-hidden="true" />
             </a>
           </div>
         </div>

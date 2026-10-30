@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { ArrowUpRight } from "lucide-react";
 import GlassSurface from "../GlassSurface/GlassSurface";
 import "./CardNav.css";
 
@@ -31,23 +32,17 @@ const CardNav = ({
     if (!nav || !content) return 260;
 
     const mobile = window.matchMedia("(max-width: 768px)").matches;
-    if (!mobile) return 260;
+    const navTop = nav.getBoundingClientRect().top;
+    const viewportHeight = window.visualViewport?.height || window.innerHeight;
+    const safeBottom = Number.parseFloat(getComputedStyle(nav).getPropertyValue("--nav-safe-bottom")) || 0;
+    const availableHeight = Math.max(60, viewportHeight - navTop - safeBottom - 12);
+    if (!mobile) return Math.min(260, availableHeight);
 
-    const previous = {
-      visibility: content.style.visibility,
-      pointerEvents: content.style.pointerEvents,
-      position: content.style.position,
-      height: content.style.height,
-    };
-    content.style.visibility = "visible";
-    content.style.pointerEvents = "auto";
-    content.style.position = "static";
-    content.style.height = "auto";
-    content.offsetHeight;
-    const desiredHeight = 60 + content.scrollHeight + 16;
+    const previous = { height: content.style.height, bottom: content.style.bottom };
+    Object.assign(content.style, { height: "auto", bottom: "auto" });
+    const desiredHeight = 60 + content.scrollHeight + 2;
     Object.assign(content.style, previous);
-
-    return Math.min(desiredHeight, window.innerHeight - 24);
+    return Math.min(desiredHeight, availableHeight);
   };
 
   const createTimeline = () => {
@@ -108,9 +103,25 @@ const CardNav = ({
     };
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.visualViewport?.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.visualViewport?.removeEventListener("resize", handleResize);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded, ease]);
+
+  useLayoutEffect(() => {
+    if (!expandedRef.current) return;
+    timelineRef.current?.kill();
+    const timeline = createTimeline();
+    if (timeline) {
+      timeline.progress(1);
+      timelineRef.current = timeline;
+    }
+    // Rebuild from the collapsed state so reversing still returns to 60px.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   const toggleMenu = () => {
     const timeline = timelineRef.current;
@@ -251,12 +262,14 @@ const CardNav = ({
                         key={`${link.label}-${linkIndex}`}
                         className="nav-card-link"
                         href={link.href}
+                        target={/^https?:\/\//.test(link.href) ? "_blank" : undefined}
+                        rel={/^https?:\/\//.test(link.href) ? "noopener noreferrer" : undefined}
                         aria-label={link.ariaLabel}
                         onClick={() => {
                           if (expandedRef.current) toggleMenu();
                         }}
                       >
-                        <span className="nav-card-link-icon" aria-hidden="true">{link.icon || "↗"}</span>
+                        <ArrowUpRight className="nav-card-link-icon" size={16} strokeWidth={1.75} aria-hidden="true" />
                         {link.label}
                       </a>
                     ))}
