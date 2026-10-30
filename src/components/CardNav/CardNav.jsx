@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ArrowUpRight } from "lucide-react";
 import GlassSurface from "../GlassSurface/GlassSurface";
 import "./CardNav.css";
+import useLightweightMotion from "../../utils/useLightweightMotion";
 
 const CardNav = ({
   logoAlt = "Logo",
@@ -25,6 +26,7 @@ const CardNav = ({
   const cardsRef = useRef([]);
   const timelineRef = useRef(null);
   const expandedRef = useRef(false);
+  const lightweight = useLightweightMotion();
 
   const calculateHeight = () => {
     const nav = navRef.current;
@@ -52,12 +54,12 @@ const CardNav = ({
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const cards = cardsRef.current.filter(Boolean);
     gsap.set(nav, { height: 60, overflow: "hidden" });
-    gsap.set(cards, { y: 50, opacity: 0 });
+    gsap.set(cards, { y: lightweight ? 12 : 50, opacity: 0 });
 
     const timeline = gsap.timeline({ paused: true });
     timeline.to(nav, {
       height: calculateHeight,
-      duration: reducedMotion ? 0 : 0.4,
+      duration: reducedMotion ? 0 : lightweight ? 0.18 : 0.4,
       ease,
     });
     timeline.to(
@@ -65,9 +67,9 @@ const CardNav = ({
       {
         y: 0,
         opacity: 1,
-        duration: reducedMotion ? 0 : 0.4,
+        duration: reducedMotion ? 0 : lightweight ? 0.18 : 0.4,
         ease,
-        stagger: reducedMotion ? 0 : 0.08,
+        stagger: reducedMotion ? 0 : lightweight ? 0.02 : 0.08,
       },
       reducedMotion ? 0 : "-=0.1",
     );
@@ -77,39 +79,43 @@ const CardNav = ({
 
   useLayoutEffect(() => {
     timelineRef.current = createTimeline();
+    if (expandedRef.current) timelineRef.current?.progress(1);
     return () => {
       timelineRef.current?.kill();
       timelineRef.current = null;
     };
-    // Match web2: rebuild only when easing changes, not while bilingual labels rerender.
+    // Preserve web2's structure; rebuild only for easing or motion policy changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ease]);
+  }, [ease, lightweight]);
 
   useLayoutEffect(() => {
+    let frame = 0;
     const handleResize = () => {
-      if (expandedRef.current) {
-        const height = calculateHeight();
-        gsap.set(navRef.current, { height });
-        timelineRef.current?.kill();
-        const timeline = createTimeline();
-        if (timeline) {
-          timeline.progress(1);
-          timelineRef.current = timeline;
+      // Mobile address-bar resize fires throughout a swipe. A closed menu
+      // needs no measuring or GSAP timeline rebuild while the page scrolls.
+      if (!expandedRef.current) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (expandedRef.current) {
+          timelineRef.current?.kill();
+          const timeline = createTimeline();
+          if (timeline) {
+            timeline.progress(1);
+            timelineRef.current = timeline;
+          }
         }
-      } else {
-        timelineRef.current?.kill();
-        timelineRef.current = createTimeline();
-      }
+      });
     };
 
     window.addEventListener("resize", handleResize);
     window.visualViewport?.addEventListener("resize", handleResize);
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener("resize", handleResize);
       window.visualViewport?.removeEventListener("resize", handleResize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isExpanded, ease]);
+  }, [isExpanded, ease, lightweight]);
 
   useLayoutEffect(() => {
     if (!expandedRef.current) return;
@@ -128,10 +134,12 @@ const CardNav = ({
     if (!timeline) return;
 
     if (!expandedRef.current) {
+      timeline.kill();
+      timelineRef.current = createTimeline();
       expandedRef.current = true;
       setIsMenuOpen(true);
       setIsExpanded(true);
-      timeline.play(0);
+      timelineRef.current?.play(0);
       return;
     }
 

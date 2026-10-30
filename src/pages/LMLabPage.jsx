@@ -314,17 +314,17 @@ export default function LMLabPage({ language = "zh", onLanguageChange }) {
         intensity={0.9}
         bandWidth={2.4}
       />
-      <div className="lmlab-page-grid" aria-hidden="true">
-        <ShapeGrid
-          direction="diagonal"
-          speed={0.12}
-          borderColor="rgba(158, 145, 255, 0.12)"
-          squareSize={56}
-          hoverFillColor="rgba(126, 101, 255, 0.16)"
-          shape="square"
-          hoverTrailAmount={7}
-        />
-      </div>
+      <ViewportBackground
+        className="lmlab-page-grid"
+        component={ShapeGrid}
+        direction="diagonal"
+        speed={0.12}
+        borderColor="rgba(158, 145, 255, 0.12)"
+        squareSize={56}
+        hoverFillColor="rgba(126, 101, 255, 0.16)"
+        shape="square"
+        hoverTrailAmount={7}
+      />
       <div className="lmlab-page-veil" aria-hidden="true" />
 
       <section className="lmlab-page-hero" id="top" aria-labelledby="lmlab-title">

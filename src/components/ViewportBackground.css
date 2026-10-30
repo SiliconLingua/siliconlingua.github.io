@@ -1,0 +1,13 @@
+.viewport-background--lite {
+  background:
+    radial-gradient(ellipse at 18% 22%, color-mix(in srgb, var(--background-primary) 48%, transparent), transparent 62%),
+    radial-gradient(ellipse at 86% 70%, color-mix(in srgb, var(--background-accent) 34%, transparent), transparent 65%);
+  filter: none !important;
+  animation: none !important;
+}
+
+.background-layer.viewport-background--lite {
+  background:
+    linear-gradient(118deg, transparent 18%, rgba(124, 65, 196, 0.48) 32%, transparent 47%, rgba(105, 58, 174, 0.42) 67%, transparent 83%),
+    radial-gradient(ellipse at 30% 5%, #342071, transparent 62%);
+}

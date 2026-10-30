@@ -2,10 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import LineSidebar from "./LineSidebar/LineSidebar";
 import "./PageNavigation.css";
+import useLightweightMotion from "../utils/useLightweightMotion";
 
 const PAGE_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export default function PageNavigation({ pages, language = "zh" }) {
+  const lightweight = useLightweightMotion();
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
   const targetRef = useRef(null);
@@ -13,6 +15,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
   const transitionRef = useRef(null);
   const routeTokenRef = useRef(0);
   const scrollValueRef = useRef({ y: 0 });
+  const initialRouteHandledRef = useRef(false);
 
   const clearRouteMotion = useCallback(() => {
     document.documentElement.classList.remove("page-route-moving");
@@ -105,7 +108,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
     const nextIndex = Math.max(0, Math.min(pages.length - 1, index));
     const page = pages[nextIndex];
     const section = page && document.getElementById(page.id);
-    if (!section || nextIndex === activeRef.current && targetRef.current === null) return;
+    if (!section) return;
 
     const currentScroll = window.scrollY;
     const top = Math.max(0, currentScroll + section.getBoundingClientRect().top);
@@ -117,6 +120,20 @@ export default function PageNavigation({ pages, language = "zh" }) {
     tweenRef.current?.kill();
     tweenRef.current = null;
     transitionRef.current?.getAnimations().forEach((animation) => animation.cancel());
+    if (transitionRef.current) transitionRef.current.style.opacity = "0";
+
+    if (lightweight) {
+      targetRef.current = null;
+      clearRouteMotion();
+      setCurrentPage(nextIndex);
+      window.history.replaceState(null, "", `#${page.id}`);
+      // Native scrolling yields immediately to a finger, without JS frame writes.
+      section.scrollIntoView({
+        block: "start",
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches || isLongJump ? "instant" : "smooth",
+      });
+      return;
+    }
     targetRef.current = nextIndex;
     activeRef.current = nextIndex;
     setActive(nextIndex);
@@ -157,7 +174,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
         setCurrentPage(nextIndex);
       },
     });
-  }, [clearRouteMotion, coverRoute, pages, setCurrentPage]);
+  }, [clearRouteMotion, coverRoute, lightweight, pages, setCurrentPage]);
 
   useEffect(() => {
     const sections = pages
@@ -205,7 +222,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
     };
 
     const interruptScroll = () => {
-      if (targetRef.current === null && !tweenRef.current) return;
+      if (targetRef.current === null && !tweenRef.current && !document.documentElement.classList.contains("page-route-moving")) return;
       routeTokenRef.current += 1;
       tweenRef.current?.kill();
       tweenRef.current = null;
@@ -224,7 +241,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
     const onAnchorClick = (event) => {
       if (event.defaultPrevented) return;
       const anchor = event.target.closest?.("a[href^='#']");
-      if (!anchor || anchor.target === "_blank") return;
+      if (!anchor || anchor.target === "_blank" || event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const index = pages.findIndex(({ id }) => `#${id}` === anchor.getAttribute("href"));
       if (index === -1) return;
       event.preventDefault();
@@ -237,6 +254,8 @@ export default function PageNavigation({ pages, language = "zh" }) {
     };
 
     let initialRouteFrame = requestAnimationFrame(() => {
+      if (initialRouteHandledRef.current) return;
+      initialRouteHandledRef.current = true;
       onHashChange();
     });
 
@@ -270,8 +289,8 @@ export default function PageNavigation({ pages, language = "zh" }) {
 
   return (
     <>
-      <div ref={transitionRef} className="page-transition" aria-hidden="true" />
-      <LineSidebar
+      {!lightweight && <div ref={transitionRef} className="page-transition" aria-hidden="true" />}
+      {!lightweight && <LineSidebar
         className="page-navigation"
         items={pages.map(({ label }) => label)}
         activeIndex={active}
@@ -289,7 +308,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
         markerColor="rgba(207, 231, 238, 0.38)"
         ariaLabel={language === "en" ? "Page navigation" : "页面导航"}
         onItemClick={(index) => turnPage(index)}
-      />
+      />}
     </>
   );
 }

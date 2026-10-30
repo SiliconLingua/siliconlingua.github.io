@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState, useMemo } from 'react';
+import useLightweightMotion from '../../utils/useLightweightMotion';
 
 const linearEase = t => t;
 
@@ -39,8 +40,10 @@ const BlurText = ({
   const complete = completedText === text;
   const reducedMotion = useReducedMotion();
   const ref = useRef(null);
+  const lightweight = useLightweightMotion();
 
   useEffect(() => {
+    if (lightweight) return undefined;
     if (!ref.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -53,7 +56,7 @@ const BlurText = ({
     );
     observer.observe(ref.current);
     return () => observer.disconnect();
-  }, [threshold, rootMargin]);
+  }, [lightweight, threshold, rootMargin]);
 
   const defaultFrom = useMemo(
     () =>
@@ -112,6 +115,10 @@ const BlurText = ({
   const letterWords = keepWordsTogether && animateBy === 'letters'
     ? text.match(/\S+/g) ?? []
     : null;
+
+  if (lightweight) {
+    return <p ref={ref} className={className}>{text}</p>;
+  }
 
   return (
     <p ref={ref} className={className} style={{ display: 'flex', flexWrap: 'wrap' }}>

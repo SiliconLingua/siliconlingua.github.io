@@ -1621,7 +1621,7 @@ a {
 
 /* One compact directory for phones/tablets; no diagonal offsets or sidebar gutter. */
 @media (max-width: 1200px), (pointer: coarse) {
-  html { scroll-snap-type: y proximity; }
+  html { scroll-snap-type: none; }
   :lang(en) .hero-title-cn { font-size: clamp(30px, 6.8vw, 82px); letter-spacing: 0; }
   .members-section { padding: 104px 0 24px; }
   .members-content { width: min(760px, calc(100% - 40px)); margin-inline: auto; }
@@ -1699,4 +1699,19 @@ a {
   .members-heading h2 { font-size: 28px; }
   .members-list { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(6, minmax(40px, auto)); column-gap: 16px; }
   .about-section, .lmlab-section, .llm-section, .developing-section, .join-section { padding-top: 100px; padding-bottom: 48px; }
+}
+
+/* Stable section heights while mobile browser chrome expands/collapses. */
+@media (max-width: 1200px), (pointer: coarse) {
+  .landing-page, .hero, .page-section { min-height: 100svh; }
+  .background-layer { height: 100svh; }
+  .hero, .page-section { scroll-snap-align: none; scroll-snap-stop: normal; }
+  .member-list-row { animation: none; }
+  .action-star:active { background: rgba(133, 101, 219, 0.24); }
+  .glass-surface--fallback {
+    background: rgba(20, 16, 36, 0.7);
+    backdrop-filter: blur(8px) saturate(1.15);
+    -webkit-backdrop-filter: blur(8px) saturate(1.15);
+  }
+  .page-transition { display: none; }
 }

@@ -3,6 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState, useRef, useId } from 'react';
 import './GlassSurface.css';
+import useLightweightMotion from '../../utils/useLightweightMotion';
 
 const GlassSurface = ({
   children,
@@ -34,6 +35,8 @@ const GlassSurface = ({
 
   const [svgSupported, setSvgSupported] = useState(false);
   const [active, setActive] = useState(false);
+  const lightweight = useLightweightMotion();
+  const useSvg = svgSupported && !lightweight;
 
   const containerRef = useRef(null);
   const feImageRef = useRef(null);
@@ -75,7 +78,7 @@ const GlassSurface = ({
   }, [generateDisplacementMap]);
 
   useEffect(() => {
-    if (!active) return;
+    if (!active || !useSvg) return;
     updateDisplacementMap();
     [
       { ref: redChannelRef, offset: redOffset },
@@ -92,6 +95,7 @@ const GlassSurface = ({
     gaussianBlurRef.current?.setAttribute('stdDeviation', displace.toString());
   }, [
     active,
+    useSvg,
     updateDisplacementMap,
     width,
     height,
@@ -111,7 +115,7 @@ const GlassSurface = ({
   ]);
 
   useEffect(() => {
-    if (!containerRef.current || !active) return;
+    if (!containerRef.current || !active || !useSvg) return;
 
     let frame = 0;
     const resizeObserver = new ResizeObserver(() => {
@@ -125,7 +129,7 @@ const GlassSurface = ({
       resizeObserver.disconnect();
       cancelAnimationFrame(frame);
     };
-  }, [active, updateDisplacementMap]);
+  }, [active, useSvg, updateDisplacementMap]);
 
   useEffect(() => {
     if (!enabled) {
@@ -181,10 +185,10 @@ const GlassSurface = ({
   return (
     <div
       ref={containerRef}
-      className={`glass-surface ${svgSupported ? 'glass-surface--svg' : 'glass-surface--fallback'} ${active ? '' : 'glass-surface--inactive'} ${className}`}
+      className={`glass-surface ${useSvg ? 'glass-surface--svg' : 'glass-surface--fallback'} ${active ? '' : 'glass-surface--inactive'} ${className}`}
       style={containerStyle}
     >
-      <svg className="glass-surface__filter" xmlns="http://www.w3.org/2000/svg">
+      {useSvg && <svg className="glass-surface__filter" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id={filterId} colorInterpolationFilters="sRGB" x="0%" y="0%" width="100%" height="100%">
             <feImage ref={feImageRef} x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map" />
@@ -233,7 +237,7 @@ const GlassSurface = ({
             <feGaussianBlur ref={gaussianBlurRef} in="output" stdDeviation="0.7" />
           </filter>
         </defs>
-      </svg>
+      </svg>}
 
       <div className="glass-surface__content">{children}</div>
     </div>

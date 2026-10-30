@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import useLightweightMotion from '../utils/useLightweightMotion';
 
 import './StarBorder.css';
 
@@ -217,6 +218,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
   const tag = as || 'button';
   const Component = tag as unknown as React.FC<Record<string, unknown>>;
   const rootRef = useRef<HTMLElement>(null);
+  const lightweight = useLightweightMotion();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wakeRef = useRef<(() => void) | null>(null);
   const palette = THEMES[theme] ?? THEMES.dark;
@@ -240,6 +242,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
   settingsRef.current = settings;
 
   useEffect(() => {
+    if (lightweight) return undefined;
     const root = rootRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
@@ -613,7 +616,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
       root.removeEventListener('focus', onFocus);
       root.removeEventListener('blur', onBlur);
     };
-  }, []);
+  }, [lightweight]);
 
   useEffect(() => {
     wakeRef.current?.();
@@ -636,7 +639,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
       {...(tag === 'button' && (rest as { type?: string }).type === undefined ? { type: 'button' } : null)}
       {...rest}
     >
-      <canvas ref={canvasRef} className="star-border__light" aria-hidden="true" />
+      {!lightweight && <canvas ref={canvasRef} className="star-border__light" aria-hidden="true" />}
       {children}
     </Component>
   );
