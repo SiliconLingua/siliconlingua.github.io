@@ -1,5 +1,5 @@
 import { memo, Suspense, useEffect, useRef, useState } from "react";
-import useLightweightMotion from "../utils/useLightweightMotion";
+import useReducedMotionProfile from "../utils/useReducedMotionProfile";
 import "./ViewportBackground.css";
 
 const ViewportBackground = memo(function ViewportBackground({
@@ -8,20 +8,34 @@ const ViewportBackground = memo(function ViewportBackground({
   ...props
 }) {
   const ref = useRef(null);
-  const [nearViewport, setNearViewport] = useState(false);
-  const lightweight = useLightweightMotion();
+  const unmountTimerRef = useRef(0);
+  const [mounted, setMounted] = useState(false);
+  const reducedMotion = useReducedMotionProfile();
 
   useEffect(() => {
-    if (lightweight) return undefined;
+    if (reducedMotion) return undefined;
+    const target = ref.current?.closest("section") ?? ref.current;
+    if (!target) return undefined;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setNearViewport(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          window.clearTimeout(unmountTimerRef.current);
+          setMounted(true);
+        } else {
+          // Retain a just-exited GPU scene briefly so a quick swipe back does
+          // not destroy and recompile its WebGL/WebGPU context.
+          unmountTimerRef.current = window.setTimeout(() => setMounted(false), 1800);
+        }
       },
-      { rootMargin: "160px 0px" },
+      { rootMargin: "800px 0px" },
     );
-    observer.observe(ref.current.closest("section") ?? ref.current);
-    return () => observer.disconnect();
-  }, [lightweight]);
+    observer.observe(target);
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(unmountTimerRef.current);
+    };
+  }, [reducedMotion]);
 
   const colors = props.colors ?? props.gradientColors ?? [
     props.color1 ?? props.glowColor ?? props.color ?? props.shardColor ?? "#5227ff",
@@ -30,13 +44,13 @@ const ViewportBackground = memo(function ViewportBackground({
 
   return (
     <div
-      className={`${className ?? ""}${lightweight ? " viewport-background--lite" : ""}`}
-      style={lightweight ? { "--background-primary": colors[0], "--background-accent": colors[1] ?? colors[0] } : undefined}
-      data-motion-profile={lightweight ? "lightweight" : "full"}
+      className={`${className ?? ""}${reducedMotion ? " viewport-background--lite" : ""}`}
+      style={reducedMotion ? { "--background-primary": colors[0], "--background-accent": colors[1] ?? colors[0] } : undefined}
+      data-motion-profile={reducedMotion ? "reduced" : "full"}
       ref={ref}
       aria-hidden="true"
     >
-      {!lightweight && nearViewport && (
+      {!reducedMotion && mounted && (
         <Suspense fallback={null}>
           <Background {...props} />
         </Suspense>

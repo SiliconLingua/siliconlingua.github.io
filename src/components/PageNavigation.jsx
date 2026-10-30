@@ -2,12 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import LineSidebar from "./LineSidebar/LineSidebar";
 import "./PageNavigation.css";
-import useLightweightMotion from "../utils/useLightweightMotion";
+import useReducedMotionProfile from "../utils/useReducedMotionProfile";
 
 const PAGE_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export default function PageNavigation({ pages, language = "zh" }) {
-  const lightweight = useLightweightMotion();
+  const reducedMotion = useReducedMotionProfile();
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
   const targetRef = useRef(null);
@@ -122,7 +122,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
     transitionRef.current?.getAnimations().forEach((animation) => animation.cancel());
     if (transitionRef.current) transitionRef.current.style.opacity = "0";
 
-    if (lightweight) {
+    if (reducedMotion) {
       targetRef.current = null;
       clearRouteMotion();
       setCurrentPage(nextIndex);
@@ -174,7 +174,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
         setCurrentPage(nextIndex);
       },
     });
-  }, [clearRouteMotion, coverRoute, lightweight, pages, setCurrentPage]);
+  }, [clearRouteMotion, coverRoute, reducedMotion, pages, setCurrentPage]);
 
   useEffect(() => {
     const sections = pages
@@ -289,8 +289,8 @@ export default function PageNavigation({ pages, language = "zh" }) {
 
   return (
     <>
-      {!lightweight && <div ref={transitionRef} className="page-transition" aria-hidden="true" />}
-      {!lightweight && <LineSidebar
+      {!reducedMotion && <div ref={transitionRef} className="page-transition" aria-hidden="true" />}
+      <LineSidebar
         className="page-navigation"
         items={pages.map(({ label }) => label)}
         activeIndex={active}
@@ -308,7 +308,7 @@ export default function PageNavigation({ pages, language = "zh" }) {
         markerColor="rgba(207, 231, 238, 0.38)"
         ariaLabel={language === "en" ? "Page navigation" : "页面导航"}
         onItemClick={(index) => turnPage(index)}
-      />}
+      />
     </>
   );
 }

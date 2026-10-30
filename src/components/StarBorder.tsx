@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import useLightweightMotion from '../utils/useLightweightMotion';
+import useReducedMotionProfile from '../utils/useReducedMotionProfile';
+import { getAdaptiveDpr } from '../utils/renderingBudget';
 
 import './StarBorder.css';
 
@@ -218,7 +219,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
   const tag = as || 'button';
   const Component = tag as unknown as React.FC<Record<string, unknown>>;
   const rootRef = useRef<HTMLElement>(null);
-  const lightweight = useLightweightMotion();
+  const reducedMotionProfile = useReducedMotionProfile();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wakeRef = useRef<(() => void) | null>(null);
   const palette = THEMES[theme] ?? THEMES.dark;
@@ -242,7 +243,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
   settingsRef.current = settings;
 
   useEffect(() => {
-    if (lightweight) return undefined;
+    if (reducedMotionProfile) return undefined;
     const root = rootRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
@@ -279,7 +280,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
     const measure = () => {
       state.width = root.offsetWidth;
       state.height = root.offsetHeight;
-      state.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      state.dpr = getAdaptiveDpr(state.width, state.height);
       canvas.width = Math.max(1, Math.round((state.width + BLEED * 2) * state.dpr));
       canvas.height = Math.max(1, Math.round((state.height + BLEED * 2) * state.dpr));
       wake();
@@ -616,7 +617,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
       root.removeEventListener('focus', onFocus);
       root.removeEventListener('blur', onBlur);
     };
-  }, [lightweight]);
+  }, [reducedMotionProfile]);
 
   useEffect(() => {
     wakeRef.current?.();
@@ -639,7 +640,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
       {...(tag === 'button' && (rest as { type?: string }).type === undefined ? { type: 'button' } : null)}
       {...rest}
     >
-      {!lightweight && <canvas ref={canvasRef} className="star-border__light" aria-hidden="true" />}
+      {!reducedMotionProfile && <canvas ref={canvasRef} className="star-border__light" aria-hidden="true" />}
       {children}
     </Component>
   );

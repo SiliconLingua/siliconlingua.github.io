@@ -5,7 +5,7 @@ import {
 } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import useLightweightMotion from "../utils/useLightweightMotion";
+import useReducedMotionProfile from "../utils/useReducedMotionProfile";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,7 +53,7 @@ export default function AnimatedContent({
   ...props
 }) {
   const ref = useRef(null);
-  const lightweight = useLightweightMotion();
+  const reducedMotion = useReducedMotionProfile();
   const callbacksRef = useRef({ onStart, onComplete, onDisappearanceComplete });
   callbacksRef.current = { onStart, onComplete, onDisappearanceComplete };
 
@@ -64,33 +64,10 @@ export default function AnimatedContent({
     let scroller = container || document.getElementById("snap-main-container") || null;
     if (typeof scroller === "string") scroller = document.querySelector(scroller);
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (lightweight) {
-      // A single compositor-only reveal, not per-child blur/ScrollTrigger work.
+    if (reducedMotion) {
       element.style.visibility = "visible";
-      if (reducedMotion) {
-        callbacksRef.current.onComplete?.();
-        return undefined;
-      }
-      let animation;
-      let observer;
-      const reveal = () => {
-        observer?.disconnect();
-        callbacksRef.current.onStart?.();
-        animation = element.animate(
-          [{ opacity: 0.7, transform: "translateY(10px)" }, { opacity: 1, transform: "translateY(0)" }],
-          { duration: 280, easing: "ease-out" },
-        );
-        animation.finished.then(() => callbacksRef.current.onComplete?.()).catch(() => undefined);
-      };
-      if (trigger === "mount") reveal();
-      else {
-        observer = new IntersectionObserver(([entry]) => {
-          if (entry.isIntersecting) reveal();
-        }, { threshold: 0 });
-        observer.observe(element);
-      }
-      return () => { observer?.disconnect(); animation?.cancel(); };
+      callbacksRef.current.onComplete?.();
+      return undefined;
     }
     const context = gsap.context(() => {
       const targets = stagger > 0 && element.children.length
@@ -102,10 +79,6 @@ export default function AnimatedContent({
       const mask = WIPES[wipe];
 
       gsap.set(element, { visibility: "visible" });
-      if (reducedMotion) {
-        callbacksRef.current.onComplete?.();
-        return;
-      }
 
       const from = {
         [axis]: distance * sign,
@@ -209,7 +182,7 @@ export default function AnimatedContent({
 
     return () => context.revert();
   }, [
-    lightweight,
+    reducedMotion,
     container,
     distance,
     direction,

@@ -3,7 +3,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState, useRef, useId } from 'react';
 import './GlassSurface.css';
-import useLightweightMotion from '../../utils/useLightweightMotion';
 
 const GlassSurface = ({
   children,
@@ -35,8 +34,7 @@ const GlassSurface = ({
 
   const [svgSupported, setSvgSupported] = useState(false);
   const [active, setActive] = useState(false);
-  const lightweight = useLightweightMotion();
-  const useSvg = svgSupported && !lightweight;
+  const useSvg = svgSupported;
 
   const containerRef = useRef(null);
   const feImageRef = useRef(null);

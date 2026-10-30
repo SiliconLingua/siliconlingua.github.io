@@ -11,7 +11,7 @@ import ViewportBackground from "./components/ViewportBackground";
 import PageNavigation from "./components/PageNavigation";
 import ShapeGrid from "./components/ShapeGrid/ShapeGrid";
 import LMLabPage from "./pages/LMLabPage";
-import useLightweightMotion from "./utils/useLightweightMotion";
+import useReducedMotionProfile from "./utils/useReducedMotionProfile";
 
 const AeroShards = lazy(() => import("./components/AeroShards"));
 const ColorBends = lazy(() => import("./components/ColorBends"));
@@ -333,7 +333,7 @@ function ActionButton({ children, className = "", ...props }) {
 }
 
 function App() {
-  const lightweight = useLightweightMotion();
+  const reducedMotion = useReducedMotionProfile();
   const [language, setLanguage] = useState("zh");
   const [copied, setCopied] = useState(false);
   const copyTimer = useRef(null);
@@ -696,10 +696,10 @@ function App() {
           </div>
           <div className="lmlab-visual">
             <CardSwap
-              autoplay={!lightweight}
-              draggable={!lightweight}
-              intro={!lightweight}
-              parallax={lightweight ? 0 : 0.5}
+              autoplay={!reducedMotion}
+              draggable={!reducedMotion}
+              intro={!reducedMotion}
+              parallax={reducedMotion ? 0 : 0.5}
               className="lmlab-card-swap"
               width={460}
               height={306}

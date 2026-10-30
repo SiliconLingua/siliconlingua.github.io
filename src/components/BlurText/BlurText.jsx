@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import useLightweightMotion from '../../utils/useLightweightMotion';
+import useReducedMotionProfile from '../../utils/useReducedMotionProfile';
 
 const linearEase = t => t;
 
@@ -40,10 +40,10 @@ const BlurText = ({
   const complete = completedText === text;
   const reducedMotion = useReducedMotion();
   const ref = useRef(null);
-  const lightweight = useLightweightMotion();
+  const reducedMotionProfile = useReducedMotionProfile();
 
   useEffect(() => {
-    if (lightweight) return undefined;
+    if (reducedMotionProfile) return undefined;
     if (!ref.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -56,7 +56,7 @@ const BlurText = ({
     );
     observer.observe(ref.current);
     return () => observer.disconnect();
-  }, [lightweight, threshold, rootMargin]);
+  }, [reducedMotionProfile, threshold, rootMargin]);
 
   const defaultFrom = useMemo(
     () =>
@@ -116,7 +116,7 @@ const BlurText = ({
     ? text.match(/\S+/g) ?? []
     : null;
 
-  if (lightweight) {
+  if (reducedMotionProfile) {
     return <p ref={ref} className={className}>{text}</p>;
   }
 

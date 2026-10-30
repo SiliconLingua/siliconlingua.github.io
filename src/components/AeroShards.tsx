@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { draw, effect, frame, init, sampler, storage, surface, target, uniforms } from 'vgpu';
+import { getAdaptiveDpr } from '../utils/renderingBudget';
 import './AeroShards.css';
 
 export interface AeroShardsProps {
@@ -1083,6 +1084,7 @@ export default function AeroShards({
     let disposed = false;
     let gpu: Awaited<ReturnType<typeof init>> | null = null;
     let raf = 0;
+    let pageVisible = document.visibilityState !== 'hidden';
     const cleanups: Array<() => void> = [];
 
     const fail = (error: unknown) => {
@@ -1107,7 +1109,7 @@ export default function AeroShards({
         navigator as Navigator & { gpu: { getPreferredCanvasFormat(): string } }
       ).gpu.getPreferredCanvasFormat();
       const sizeFor = (): [number, number] => {
-        const ratio = Math.min(window.devicePixelRatio || 1, settingsRef.current.dpr);
+        const ratio = getAdaptiveDpr(container.clientWidth, container.clientHeight, settingsRef.current.dpr);
         return [
           Math.max(1, Math.round(container.clientWidth * ratio)),
           Math.max(1, Math.round(container.clientHeight * ratio))
@@ -2019,11 +2021,8 @@ export default function AeroShards({
       };
 
       const tick = (now: number) => {
-        raf = requestAnimationFrame(tick);
-        if (!state.visible || document.hidden) {
-          state.last = now;
-          return;
-        }
+        raf = 0;
+        if (!state.visible || !pageVisible || document.hidden) return;
         const s = settingsRef.current;
         const dt = state.last ? Math.min((now - state.last) / 1000, 0.05) : 0;
         state.last = now;
@@ -2129,6 +2128,11 @@ export default function AeroShards({
         if (state.quiet > 30) return;
         resize();
         render(s, dt, reduced);
+        raf = requestAnimationFrame(tick);
+      };
+
+      const wake = () => {
+        if (!raf && !disposed && state.visible && pageVisible) raf = requestAnimationFrame(tick);
       };
 
       const local = (event: PointerEvent) => {
@@ -2150,10 +2154,12 @@ export default function AeroShards({
         const hit = local(event);
         state.inside = hit.inside;
         if (hit.inside) state.pointer = hit.point;
+        wake();
       };
 
       const onLeave = () => {
         state.inside = false;
+        wake();
       };
 
       const onDown = (event: PointerEvent) => {
@@ -2169,6 +2175,7 @@ export default function AeroShards({
         state.pointer = hit.point;
         state.pressAt = state.clock;
         state.pressPoint = hit.point;
+        wake();
       };
 
       const onUp = () => {
@@ -2190,27 +2197,47 @@ export default function AeroShards({
         }
         state.pressAt = -1;
         state.holding = false;
+        wake();
+      };
+
+      const onVisibilityChange = () => {
+        pageVisible = document.visibilityState !== 'hidden';
+        state.last = 0;
+        if (pageVisible) wake();
+        else {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
       };
 
       window.addEventListener('pointermove', onMove, { passive: true });
       window.addEventListener('pointerdown', onDown);
       window.addEventListener('pointerup', onUp);
       window.addEventListener('pointercancel', onUp);
+      document.addEventListener('visibilitychange', onVisibilityChange);
       document.documentElement.addEventListener('pointerleave', onLeave);
       cleanups.push(() => {
         window.removeEventListener('pointermove', onMove);
         window.removeEventListener('pointerdown', onDown);
         window.removeEventListener('pointerup', onUp);
         window.removeEventListener('pointercancel', onUp);
+        document.removeEventListener('visibilitychange', onVisibilityChange);
         document.documentElement.removeEventListener('pointerleave', onLeave);
       });
 
       const visibility = new IntersectionObserver(entries => {
         state.visible = entries.some(entry => entry.isIntersecting);
+        if (state.visible) {
+          state.last = 0;
+          wake();
+        } else {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
       });
       visibility.observe(container);
       cleanups.push(() => visibility.disconnect());
-      raf = requestAnimationFrame(tick);
+      wake();
     };
 
     start().catch(fail);

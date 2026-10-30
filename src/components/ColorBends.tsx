@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { getAdaptiveDpr } from '../utils/renderingBudget';
+import { startVisibleAnimation } from '../utils/visibleAnimation';
 import './ColorBends.css';
 
 type ColorBendsProps = {
@@ -148,7 +150,6 @@ export default function ColorBends({
 }: ColorBendsProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const rafRef = useRef<number | null>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const rotationRef = useRef<number>(rotation);
@@ -201,18 +202,16 @@ export default function ColorBends({
     });
     rendererRef.current = renderer;
     (renderer as any).outputColorSpace = (THREE as any).SRGBColorSpace;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setClearColor(0x000000, transparent ? 0 : 1);
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     renderer.domElement.style.display = 'block';
     container.appendChild(renderer.domElement);
 
-    const clock = new THREE.Clock();
-
     const handleResize = () => {
       const w = container.clientWidth || 1;
       const h = container.clientHeight || 1;
+      renderer.setPixelRatio(getAdaptiveDpr(w, h));
       renderer.setSize(w, h, false);
       (material.uniforms.uCanvas.value as THREE.Vector2).set(w, h);
     };
@@ -227,9 +226,9 @@ export default function ColorBends({
       (window as Window).addEventListener('resize', handleResize);
     }
 
-    const loop = () => {
-      const dt = clock.getDelta();
-      const elapsed = clock.elapsedTime;
+    const loop = (elapsedMs: number, deltaMs: number) => {
+      const dt = deltaMs / 1000;
+      const elapsed = elapsedMs / 1000;
       material.uniforms.uTime.value = elapsed;
 
       const deg = (rotationRef.current % 360) + autoRotateRef.current * elapsed;
@@ -244,12 +243,11 @@ export default function ColorBends({
       cur.lerp(tgt, amt);
       (material.uniforms.uPointer.value as THREE.Vector2).copy(cur);
       renderer.render(scene, camera);
-      rafRef.current = requestAnimationFrame(loop);
     };
-    rafRef.current = requestAnimationFrame(loop);
+    const stopAnimation = startVisibleAnimation(container, loop, { maxFps: 60 });
 
     return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      stopAnimation();
       if (resizeObserverRef.current) resizeObserverRef.current.disconnect();
       else (window as Window).removeEventListener('resize', handleResize);
       geometry.dispose();

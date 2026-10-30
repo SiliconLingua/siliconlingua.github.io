@@ -1706,12 +1706,5 @@ a {
   .landing-page, .hero, .page-section { min-height: 100svh; }
   .background-layer { height: 100svh; }
   .hero, .page-section { scroll-snap-align: none; scroll-snap-stop: normal; }
-  .member-list-row { animation: none; }
   .action-star:active { background: rgba(133, 101, 219, 0.24); }
-  .glass-surface--fallback {
-    background: rgba(20, 16, 36, 0.7);
-    backdrop-filter: blur(8px) saturate(1.15);
-    -webkit-backdrop-filter: blur(8px) saturate(1.15);
-  }
-  .page-transition { display: none; }
 }

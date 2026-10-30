@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import './WebThreads.css';
 import { startVisibleAnimation } from '../../utils/visibleAnimation';
+import { getAdaptiveDpr } from '../../utils/renderingBudget';
 
 const hexToRgb = hex => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -176,7 +177,7 @@ const WebThreads = ({
       alpha: true,
       premultipliedAlpha: true,
       antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
+      dpr: getAdaptiveDpr(container.clientWidth, container.clientHeight)
     });
 
     const gl = renderer.gl;
@@ -229,6 +230,7 @@ const WebThreads = ({
       const rect = container.getBoundingClientRect();
       const w = Math.max(1, Math.floor(rect.width));
       const h = Math.max(1, Math.floor(rect.height));
+      renderer.dpr = getAdaptiveDpr(w, h);
       renderer.setSize(w, h);
       const res = program.uniforms.iResolution.value;
       res[0] = gl.drawingBufferWidth;

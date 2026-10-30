@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type CSSProperties } from 'react';
+import { getAdaptiveDpr } from '../../utils/renderingBudget';
 import './Particles.css';
 
 export type ParticlesShape = 'circle' | 'square' | 'ring' | 'sparkle';
@@ -837,7 +838,7 @@ const Particles = ({
       const s = settingsRef.current;
       const width = Math.max(1, container.clientWidth);
       const height = Math.max(1, container.clientHeight);
-      const ratio = Math.min(s.dpr || window.devicePixelRatio || 1, 2);
+      const ratio = getAdaptiveDpr(width, height, s.dpr || 2);
       view.width = width;
       view.height = height;
       canvas.width = Math.max(1, Math.round(width * ratio));

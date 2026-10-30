@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { getAdaptiveDpr } from '../utils/renderingBudget';
 import './MagicRings.css';
 
 type Motion = 'pulse' | 'ripple' | 'breathe';
@@ -578,7 +579,7 @@ const MagicRings = ({
     const resize = () => {
       const s = settingsRef.current;
       const rect = container.getBoundingClientRect();
-      const ratio = Math.min(window.devicePixelRatio || 1, s.maxRatio);
+      const ratio = getAdaptiveDpr(rect.width, rect.height, s.maxRatio);
       const width = Math.max(1, Math.round(rect.width * ratio));
       const height = Math.max(1, Math.round(rect.height * ratio));
       if (canvas.width !== width || canvas.height !== height) {

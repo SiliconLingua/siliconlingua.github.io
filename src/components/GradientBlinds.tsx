@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type CSSProperties } from 'react';
+import { getAdaptiveDpr } from '../utils/renderingBudget';
 import './GradientBlinds.css';
 
 export type BlindsShineDirection = 'left' | 'right';
@@ -515,7 +516,7 @@ const GradientBlinds = ({
       const s = settingsRef.current;
       view.width = Math.max(1, container.clientWidth);
       view.height = Math.max(1, container.clientHeight);
-      view.ratio = Math.min(s.dpr || window.devicePixelRatio || 1, 2);
+      view.ratio = getAdaptiveDpr(view.width, view.height, s.dpr || 2);
       canvas.width = Math.max(1, Math.round(view.width * view.ratio));
       canvas.height = Math.max(1, Math.round(view.height * view.ratio));
       if (!light.ready) {

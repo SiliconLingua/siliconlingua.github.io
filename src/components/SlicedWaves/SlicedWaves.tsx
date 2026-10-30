@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type HTMLAttributes } from 'react';
+import { getAdaptiveDpr } from '../../utils/renderingBudget';
 
 import './SlicedWaves.css';
 
@@ -612,7 +613,7 @@ const SlicedWaves = ({
       const s = settingsRef.current;
       const width = Math.max(1, container.clientWidth);
       const height = Math.max(1, container.clientHeight);
-      const base = Math.min(s.dpr || window.devicePixelRatio || 1, 2);
+      const base = getAdaptiveDpr(width, height, s.dpr || 2);
       const longest = Math.max(width, height) * base;
       const ratio = longest > MAX_RENDER_DIM ? (base * MAX_RENDER_DIM) / longest : base;
       state.width = width;
