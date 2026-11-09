@@ -252,7 +252,7 @@ const members = [
   { name: "人朝的小郭同学", handle: "guo", qq: "1559689519" },
   { name: "小严awa", handle: "xiaoyanawa", qq: "3585302907" },
   { name: "Qi", handle: "qi", qq: "3949455390" },
-  { name: "龙雀awa", handle: "longqueawa", qq: "3960080816" },
+  { name: "明月清晖", handle: "mingyueqinghui", qq: "3960080816" },
   { name: "狗修金的乖狐狸", handle: "gouxiu", qq: "3361390582" },
   { name: "METQL", handle: "metql", qq: "2644019891" },
   { name: "EcoSpace", handle: "ecospace", qq: "1984922167" },
